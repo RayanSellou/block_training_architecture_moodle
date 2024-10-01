@@ -1,9 +1,16 @@
 #block_training_architecture_moodle
 # Training Architecture #
 
-TODO Describe the plugin shortly here.
+This plugin is dependent on the local_training_architecture plugin because it displays the architecture defined with it.
+The goal is to improve.
 
-TODO Provide more detailed description here.
+Here is a presentation of the couple of plugins :
+https://amupod.univ-amu.fr/video/31933-mm24_optimiser-lexperience-utilisateur-grace-aux-plugins-training_architecture-par-jeremie-pilette/
+
+    local_training_architecture
+    block_training_architecture
+
+This plugin can be added directly in the dashboard or in the course to have the navigation.e.
 
 ## Installing via uploaded ZIP file ##
 
