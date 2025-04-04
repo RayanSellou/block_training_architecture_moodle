@@ -34,10 +34,10 @@ $string['training_no_courses'] = 'Cette formation n’est inscrite à aucun cour
 
 $string['training'] = 'Formation ';
 $string['semester'] = 'Semestre ';
-$string['descriptionModalTitle'] = 'Description';
+$string['descriptionmodaltitle'] = 'Description';
 
 $string['courses_not_in_architecture'] = 'Cours hors de l\'architecture';
 $string['view_by_semester'] = 'Visualiser en semestre';
-$string['actualCourse'] = 'Cours actuel';
+$string['actualcourse'] = 'Cours actuel';
 $string['path'] = 'Vous êtes ici : ';
 $string['footer'] = 'Tous les cours';

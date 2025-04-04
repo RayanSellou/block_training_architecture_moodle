@@ -34,10 +34,10 @@ $string['training_no_courses'] = 'This training is not enrolled in any courses.'
 
 $string['training'] = 'Training ';
 $string['semester'] = 'Semester ';
-$string['descriptionModalTitle'] = 'Description';
+$string['descriptionmodaltitle'] = 'Description';
 
 $string['courses_not_in_architecture'] = 'Courses outside the architecture';
 $string['view_by_semester'] = 'View by semester';
-$string['actualCourse'] = 'Actual course';
+$string['actualcourse'] = 'Actual course';
 $string['path'] = 'You are here : ';
 $string['footer'] = 'All courses';

@@ -985,7 +985,7 @@ class block_training_architecture extends block_base {
         $courseUrlId = $this->getCourseUrlId($course_url);
 
         // Determine if the current course matches the course in the URL
-        $actualCourseIcon = ($courseId == $courseUrlId) ? $OUTPUT->pix_icon('t/online', get_string('actualCourse', 'block_training_architecture'), 'moodle', ['class' => 'green']) : '';
+        $actualCourseIcon = ($courseId == $courseUrlId) ? $OUTPUT->pix_icon('t/online', get_string('actualcourse', 'block_training_architecture'), 'moodle', ['class' => 'green']) : '';
         
         return '
         <div class="course-context">
@@ -1061,7 +1061,7 @@ class block_training_architecture extends block_base {
             <div class="modal-dialog" id="custom-modal">
                 <div class="modal-content" id="custom-modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="' . $labelId . '">' . get_string('descriptionModalTitle', 'block_training_architecture') . '</h5>
+                        <h5 class="modal-title" id="' . $labelId . '">' . get_string('descriptionmodaltitle', 'block_training_architecture') . '</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
