@@ -72,7 +72,7 @@ class block_training_architecture extends block_base {
         }
 
         // Attributes
-        $this->content = new stdClass;
+        $this->content = new \stdClass;
         $this->content->text = '';
         $this->content->footer = '';
 
@@ -165,8 +165,8 @@ class block_training_architecture extends block_base {
                     $hasPath = true;
                     $course_name = $DB->get_field('course', 'shortname', ['id' => $courseId]);
                     $this->content->text .= '<hr></hr>';
-                    $this->content->text .= "<div class='path'>" . get_string('path', 'block_training_architecture') . "</div>";
-                    $this->content->text .= "<div class='path'>" . $course_name . "</div>";
+                    $this->content->text .= "<div class='blocktrainingarchitecture-path'>" . get_string('path', 'block_training_architecture') . "</div>";
+                    $this->content->text .= "<div class='blocktrainingarchitecture-path'>" . $course_name . "</div>";
                     break;
                 }
             }
@@ -244,12 +244,12 @@ class block_training_architecture extends block_base {
                         $this->content->text .= '<hr></hr>';
                     }
 
-                    $div_class = $this->display_context == 'course' ? 'training-title-elements-course' : 'training-title-elements';
+                    $div_class = $this->display_context == 'course' ? 'blocktrainingarchitecture-training-title-elements-course' : 'blocktrainingarchitecture-training-title-elements';
                     $training_name = $this->display_context == 'course' ? $training->shortname : $training->fullname;
 
                     $header_tag = ($this->display_context == 'course') ? 'h5' : 'h4';
 
-                    $this->content->text .= "<div class='$div_class'><" . $header_tag . " class='h-4-5-training'>" . get_string('training', 'block_training_architecture') . $training_name . ' (' . $cohort->name . ')</' . $header_tag . '>';
+                    $this->content->text .= "<div class='$div_class'><" . $header_tag . " class='blocktrainingarchitecture-h-4-5-training'>" . get_string('training', 'block_training_architecture') . $training_name . ' (' . $cohort->name . ')</' . $header_tag . '>';
 
 
                     // Get the description of the training
@@ -259,14 +259,14 @@ class block_training_architecture extends block_base {
                         $this->addDescriptionModal($trainingDescription, $trainingId, 'Training');
                     }
 
-                    $span_class = $this->display_context == 'course' ? 'course-context' : 'dashboard-context';
+                    $span_class = $this->display_context == 'course' ? 'blocktrainingarchitecture-course-context' : 'blocktrainingarchitecture-dashboard-context';
 
                     // Display by semester
                     if($training->issemester == 1) {
-                        $this->content->text .= "<div class='semester-elements'> <span class='$span_class'>" . get_string('view_by_semester', 'block_training_architecture') . "</span>
-                        <label class='switch'>
+                        $this->content->text .= "<div class='blocktrainingarchitecture-semester-elements'> <span class='$span_class'>" . get_string('view_by_semester', 'block_training_architecture') . "</span>
+                        <label class='blocktrainingarchitecture-switch'>
                             <input id=\"switch-{$training->id}\" type='checkbox' checked>
-                            <span class='slider round'></span>
+                            <span class='blocktrainingarchitecture-slider blocktrainingarchitecture-round'></span>
                         </label></div>";
 
                         $this->content->text .= "</div>";
@@ -295,7 +295,7 @@ class block_training_architecture extends block_base {
                             $this->content->text .= '</div>'; 
                         }
                         else {
-                            $this->content->text .= '<div class="training-no-courses">' . get_string('training_no_courses', 'block_training_architecture') . '</div>'; 
+                            $this->content->text .= '<div class="blocktrainingarchitecture-training-no-courses">' . get_string('training_no_courses', 'block_training_architecture') . '</div>'; 
                         }
                     }
 
@@ -309,7 +309,7 @@ class block_training_architecture extends block_base {
                             }
                         }
                         else {
-                            $this->content->text .= '<div class="training-no-courses">' . get_string('training_no_courses', 'block_training_architecture') . '</div>'; 
+                            $this->content->text .= '<div class="blocktrainingarchitecture-training-no-courses">' . get_string('training_no_courses', 'block_training_architecture') . '</div>'; 
                         }
                     }
 
@@ -526,11 +526,11 @@ class block_training_architecture extends block_base {
             foreach ($children as $child) {
     
                 if ($DB->record_exists('local_training_architecture_lu_to_lu', ['luid1' => $child->luid2, 'trainingid' => $trainingId]) && $child->isluid2course === 'false') {
-                    $this->content->text .= '<div class="course-content-block">';
-                    $this->content->text .= '<div class="course-section-block">';
+                    $this->content->text .= '<div class="blocktrainingarchitecture-course-content-block">';
+                    $this->content->text .= '<div class="blocktrainingarchitecture-course-section-block">';
 
-                    $class = $this->display_context == 'course' ? 'course-context' : 'first-level';
-                    $this->content->text .= "<div class='course-section-header-block $class'>" . $level_name . "</div></div>";
+                    $class = $this->display_context == 'course' ? 'blocktrainingarchitecture-course-context' : 'blocktrainingarchitecture-first-level';
+                    $this->content->text .= "<div class='blocktrainingarchitecture-course-section-header-block $class'>" . $level_name . "</div></div>";
 
                     if($description && $this->display_context != 'course') {
                         $this->addDescriptionModal($description, $level_id, 'Lu');
@@ -616,7 +616,7 @@ class block_training_architecture extends block_base {
         $this->content->text .= $openDetails ? ' open>' : '>';
 
         // Determine the CSS class for the summary element based on the display context
-        $class = $this->display_context == 'course' ? 'course-context' : 'dashboard-context';
+        $class = $this->display_context == 'course' ? 'blocktrainingarchitecture-course-context' : 'blocktrainingarchitecture-dashboard-context';
 
         // Add the summary element with the specified margin style and level name
         $this->content->text .= "<summary class='$class' $margin_style_1>$level_name";
@@ -656,11 +656,11 @@ class block_training_architecture extends block_base {
         $levels = $this->get_number_of_level($trainingId);
 
         // Define the CSS class for section headers based on the display context
-        $section_header_class = $this->display_context == 'course' ? 'course-section-header-block course-context' : 'course-section-header-block first-level';
+        $section_header_class = $this->display_context == 'course' ? 'blocktrainingarchitecture-course-section-header-block blocktrainingarchitecture-course-context' : 'blocktrainingarchitecture-course-section-header-block blocktrainingarchitecture-first-level';
 
         // Display the semester header
-        $this->content->text .= '<div class="course-content-block">';
-        $this->content->text .= '<div class="course-section-block">';
+        $this->content->text .= '<div class="blocktrainingarchitecture-course-content-block">';
+        $this->content->text .= '<div class="blocktrainingarchitecture-course-section-block">';
         $this->content->text .= "<div class='$section_header_class'>" . get_string('semester', 'block_training_architecture') . 
         $semesterId . '</div></div></div>';
 
@@ -745,7 +745,7 @@ class block_training_architecture extends block_base {
         
                     // Display the level name if it's the first level and the granularity is 2
                     if ($depth == 0 && $granularityLevel == '2') {
-                        $class = $this->display_context == 'course' ? 'course-context first-level-margin' : 'first-level';
+                        $class = $this->display_context == 'course' ? 'blocktrainingarchitecture-course-context blocktrainingarchitecture-first-level-margin' : 'blocktrainingarchitecture-first-level';
                         $this->content->text .= "<div class='$class' style='margin-left: {$margin_left}px;'>" . $level_name;
 
 
@@ -834,7 +834,7 @@ class block_training_architecture extends block_base {
     protected function display_courses_not_in_architecture($courses_not_in_architecture) {
     
         if ($this->display_context != 'course') {
-            $this->content->text .= '<div class="content"><div class="courses row row">';
+            $this->content->text .= '<div class="content"><div class="courses blocktrainingarchitecture-row blocktrainingarchitecture-row">';
         }
     
         // Display the courses not in architecture
@@ -902,25 +902,25 @@ class block_training_architecture extends block_base {
                     if($semester) {
 
                         $this->content->text .= "<div id = 'path-training-{$trainingId}'>";
-                        $this->content->text .= "<div class = 'path'>" . get_string('path', 'block_training_architecture') . "</div>";
+                        $this->content->text .= "<div class = 'blocktrainingarchitecture-path'>" . get_string('path', 'block_training_architecture') . "</div>";
                         $this->content->text .= "➤ " . $module_name;
-                        $this->content->text .= "<div class = 'path-1'>" . "➤ " . $course_name . "</div>";
+                        $this->content->text .= "<div class = 'blocktrainingarchitecture-path-1'>" . "➤ " . $course_name . "</div>";
                         $this->content->text .= "</div>";
 
                         // Duplicate for change possibility
                         $this->content->text .= "<div id = 'path-training-semester-{$trainingId}'>";
-                        $this->content->text .= "<div class = 'path'>" . get_string('path', 'block_training_architecture') . "</div>";
+                        $this->content->text .= "<div class = 'blocktrainingarchitecture-path'>" . get_string('path', 'block_training_architecture') . "</div>";
                         $this->content->text .= "➤ " . get_string('semester', 'block_training_architecture') . $semester;
-                        $this->content->text .= "<div class = 'path-1'>" .  "➤ " . $module_name . "</div>";
-                        $this->content->text .= "<div class = 'path-2'>" . "➤ " . $course_name . "</div>";
+                        $this->content->text .= "<div class = 'blocktrainingarchitecture-path-1'>" .  "➤ " . $module_name . "</div>";
+                        $this->content->text .= "<div class = 'blocktrainingarchitecture-path-2'>" . "➤ " . $course_name . "</div>";
                         $this->content->text .= "</div>";
                     } 
                 }
                 else {
                     // Display the path for non-semester-based trainings
-                    $this->content->text .= "<div class = 'path'>" . get_string('path', 'block_training_architecture') . "</div>";
+                    $this->content->text .= "<div class = 'blocktrainingarchitecture-path'>" . get_string('path', 'block_training_architecture') . "</div>";
                     $this->content->text .= "➤ " . $module_name;
-                    $this->content->text .= "<div class = 'path-1'>" . "➤" . $course_name . "</div>";
+                    $this->content->text .= "<div class = 'blocktrainingarchitecture-path-1'>" . "➤" . $course_name . "</div>";
                 }
             }
         }
@@ -942,29 +942,29 @@ class block_training_architecture extends block_base {
                     if($semester) {
 
                         $this->content->text .= "<div id = 'path-training-{$trainingId}'>";
-                        $this->content->text .= "<div class = 'path'>" . get_string('path', 'block_training_architecture') . "</div>";
+                        $this->content->text .= "<div class = 'blocktrainingarchitecture-path'>" . get_string('path', 'block_training_architecture') . "</div>";
                         $this->content->text .= "➤ " . $block_name; 
-                        $this->content->text .= "<div class = 'path-1'>" . "➤ " . $module_name . "</div>";
-                        $this->content->text .= "<div class = 'path-2'>" . "➤ " . $course_name . "</div>";
+                        $this->content->text .= "<div class = 'blocktrainingarchitecture-path-1'>" . "➤ " . $module_name . "</div>";
+                        $this->content->text .= "<div class = 'blocktrainingarchitecture-path-2'>" . "➤ " . $course_name . "</div>";
                         $this->content->text .= "</div>";
 
                         // Duplicate for change possibility
                         $this->content->text .= "<div id = 'path-training-semester-{$trainingId}'>";
-                        $this->content->text .= "<div class = 'path'>" . get_string('path', 'block_training_architecture') . "</div>";
+                        $this->content->text .= "<div class = 'blocktrainingarchitecture-path'>" . get_string('path', 'block_training_architecture') . "</div>";
                         $this->content->text .= "➤ " . get_string('semester', 'block_training_architecture') . $semester;
-                        $this->content->text .= "<div class = 'path-1'>" . "➤ " . $block_name . "</div>"; 
-                        $this->content->text .= "<div class = 'path-2'>" . "➤ " . $module_name . "</div>";
-                        $this->content->text .= "<div class = 'path-3'>" . "➤ " . $course_name . "</div>";
+                        $this->content->text .= "<div class = 'blocktrainingarchitecture-path-1'>" . "➤ " . $block_name . "</div>"; 
+                        $this->content->text .= "<div class = 'blocktrainingarchitecture-path-2'>" . "➤ " . $module_name . "</div>";
+                        $this->content->text .= "<div class = 'blocktrainingarchitecture-path-3'>" . "➤ " . $course_name . "</div>";
                         $this->content->text .= "</div>";
                     }
 
                 }
                 else {
                     // Display the path for non-semester-based trainings
-                    $this->content->text .= "<div class = 'path'>" . get_string('path', 'block_training_architecture') . "</div>";
+                    $this->content->text .= "<div class = 'blocktrainingarchitecture-path'>" . get_string('path', 'block_training_architecture') . "</div>";
                     $this->content->text .= "➤ " . $block_name; 
-                    $this->content->text .= "<div class = 'path-1'>" . "➤ " . $module_name . "</div>";
-                    $this->content->text .= "<div class = 'path-2'>" . "➤ " . $course_name . "</div>";
+                    $this->content->text .= "<div class = 'blocktrainingarchitecture-path-1'>" . "➤ " . $module_name . "</div>";
+                    $this->content->text .= "<div class = 'blocktrainingarchitecture-path-2'>" . "➤ " . $course_name . "</div>";
                 }
                 
             }
@@ -985,11 +985,11 @@ class block_training_architecture extends block_base {
         $courseUrlId = $this->getCourseUrlId($course_url);
 
         // Determine if the current course matches the course in the URL
-        $actualCourseIcon = ($courseId == $courseUrlId) ? $OUTPUT->pix_icon('t/online', get_string('actualcourse', 'block_training_architecture'), 'moodle', ['class' => 'green']) : '';
+        $actualCourseIcon = ($courseId == $courseUrlId) ? $OUTPUT->pix_icon('t/online', get_string('actualcourse', 'block_training_architecture'), 'moodle', ['class' => 'blocktrainingarchitecture-green']) : '';
         
         return '
-        <div class="course-context">
-            <a class="blue" href="' . $course_url . '">' . $actualCourseIcon . $icon . $course_name . '</a>
+        <div class="blocktrainingarchitecture-course-context">
+            <a class="blocktrainingarchitecture-blue" href="' . $course_url . '">' . $actualCourseIcon . $icon . $course_name . '</a>
         </div>';
     }
     
@@ -1009,14 +1009,14 @@ class block_training_architecture extends block_base {
 
         return '
             <div class="course-box" title="' . htmlspecialchars(strip_tags($formattedSummary), ENT_QUOTES, 'UTF-8') . '">
-                <div class="frontpage-course-box">
-                    <div class="course-item">
-                        <div class="course-item-img">
+                <div class="blocktrainingarchitecture-frontpage-course-box">
+                    <div class="blocktrainingarchitecture-course-item">
+                        <div class="blocktrainingarchitecture-course-item-img">
                             <a href="' . $course_url . '" style="background-image: url(\'' . $imageUrl . '\')"></a>                                
                         </div>
-                        <div class="course-content-block">
-                            <div class="title">
-                                <a class="title-a" href="' . $course_url . '">' . $course_name . '</a>
+                        <div class="blocktrainingarchitecture-course-content-block">
+                            <div class="blocktrainingarchitecture-title">
+                                <a class="blocktrainingarchitecture-title-a" href="' . $course_url . '">' . $course_name . '</a>
                             </div>
                         </div>
                     </div>
@@ -1053,8 +1053,8 @@ class block_training_architecture extends block_base {
         $imageUrl = $CFG->wwwroot . "/blocks/training_architecture/images/description.png";
 
         $this->content->text .= '
-        <button type="button" class="btn-modal-training" data-toggle="modal" data-target="#' . $modalId . '" id="' . $buttonId . '">
-            <img class="img-description" src="' . $imageUrl . '" width="20px">
+        <button type="button" class="blocktrainingarchitecture-btn-modal-training" data-toggle="modal" data-target="#' . $modalId . '" id="' . $buttonId . '">
+            <img class="blocktrainingarchitecture-img-description" src="' . $imageUrl . '" width="20px">
         </button>
 
         <div class="modal fade" id="' . $modalId . '" tabindex="-1" aria-labelledby="' . $labelId . '" aria-hidden="true">

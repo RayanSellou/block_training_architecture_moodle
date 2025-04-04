@@ -10,7 +10,7 @@ body.path-mod-blocktrainingarchitecture details {
     margin-bottom: 15px;
 }
 
-body.path-mod-blocktrainingarchitecture #blocktrainingarchitecture-custom-modal-content {
+body.path-mod-blocktrainingarchitecture #custom-modal-content {
     min-width: 680px;
 }
 
@@ -69,7 +69,7 @@ body.path-mod-blocktrainingarchitecture .blocktrainingarchitecture-img-descripti
     } */
 }
 
-body.path-mod-blocktrainingarchitecture .blocktrainingarchitecture-img-description {
+body.path-mod-blocktrainingarchitecture .blocktrainingarchitecture-img-description:hover {
     transform: scale(1.25);
 }
 
@@ -175,7 +175,7 @@ body.path-mod-blocktrainingarchitecture .blocktrainingarchitecture-frontpage-cou
     margin-bottom: 25px;
 }
 
-body.path-mod-blocktrainingarchitecture .blocktrainingarchitecture-frontpage-course-box .course-item {
+body.path-mod-blocktrainingarchitecture .blocktrainingarchitecture-frontpage-course-box .blocktrainingarchitecture-course-item {
     border-radius: 10px;
     position: relative;
     padding: 12px 10px 6px;
@@ -184,7 +184,7 @@ body.path-mod-blocktrainingarchitecture .blocktrainingarchitecture-frontpage-cou
     backdrop-filter: blur(17px);
 }
 
-body.path-mod-blocktrainingarchitecture .blocktrainingarchitecture-frontpage-course-box .course-item .course-item-img {
+body.path-mod-blocktrainingarchitecture .blocktrainingarchitecture-frontpage-course-box .blocktrainingarchitecture-course-item .blocktrainingarchitecture-course-item-img {
     position: relative;
     overflow: hidden;
     z-index: 1;
@@ -192,7 +192,7 @@ body.path-mod-blocktrainingarchitecture .blocktrainingarchitecture-frontpage-cou
     margin: 0 auto 14px;
 }
 
-body.path-mod-blocktrainingarchitecture .blocktrainingarchitecture-frontpage-course-box .course-item .course-item-img a {
+body.path-mod-blocktrainingarchitecture .blocktrainingarchitecture-frontpage-course-box .blocktrainingarchitecture-course-item .blocktrainingarchitecture-course-item-img a {
     width: 100%;
     display: block;
     padding-top: 40%;
