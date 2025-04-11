@@ -978,23 +978,49 @@ class block_training_architecture extends block_base {
     protected function get_courses_in_architecture($level_id, &$courses) {
         global $DB;
 
-        $children = $DB->get_records('local_training_architecture_lu_to_lu', ['luid1' => $level_id]);
+        // $children = $DB->get_records('local_training_architecture_lu_to_lu', ['luid1' => $level_id]);
         
-        // If there are children, process them
-        if ($children) {
-            foreach ($children as $child) {
+        // // If there are children, process them
+        // if ($children) {
+        //     foreach ($children as $child) {
 
-                // Check if the child has further children
-                $has_children = $DB->record_exists('local_training_architecture_lu_to_lu', ['luid1' => $child->luid2]);
+        //         // Check if the child has further children
+        //         $has_children = $DB->record_exists('local_training_architecture_lu_to_lu', ['luid1' => $child->luid2]);
 
-                if ($has_children && $child->isluid2course === 'false') {  
+        //         if ($has_children && $child->isluid2course === 'false') {  
 
-                    // Recursively call the function for child levels
-                    $this->get_courses_in_architecture($child->luid2, $courses);
+        //             // Recursively call the function for child levels
+        //             $this->get_courses_in_architecture($child->luid2, $courses);
 
-                } else { // If no further children, add the course to the array (last level)
-                    $courses[] = $child->luid2;
-                }
+        //         } else { // If no further children, add the course to the array (last level)
+        //             $courses[] = $child->luid2;
+        //         }
+        //     }
+        // }
+        // return $courses;
+        // Charger toutes les relations une seule fois
+        static $all_children_by_parent = null;
+
+        if ($all_children_by_parent === null) {
+            $all_records = $DB->get_records('local_training_architecture_lu_to_lu');
+            $all_children_by_parent = [];
+
+            foreach ($all_records as $record) {
+                $all_children_by_parent[$record->luid1][] = $record;
+            }
+        }
+
+        // Récupérer les enfants du niveau courant
+        $children = isset($all_children_by_parent[$level_id]) ? $all_children_by_parent[$level_id] : [];
+
+        foreach ($children as $child) {
+            $has_children = isset($all_children_by_parent[$child->luid2]);
+
+            if ($has_children && $child->isluid2course === 'false') {
+                // Appel récursif
+                $this->get_courses_in_architecture($child->luid2, $courses);
+            } else {
+                $courses[] = $child->luid2;
             }
         }
         return $courses;
@@ -1061,17 +1087,28 @@ class block_training_architecture extends block_base {
         $records = $DB->get_records('local_training_architecture_lu_to_lu', 
         ['trainingid' => $trainingId, 'luid2' => $courseId, 'isluid2course' => 'true']);
 
+        // Récupérer les noms des LU
+        $lus = $DB->get_records_menu('local_training_architecture_lu', null, '', 'id, shortname');
+        
+        // Récupérer les semestres pour les formations par semestre
+        $semesters = $DB->get_records_menu('local_training_architecture_training_links', ['trainingid' => $trainingId], '', 'courseid, semester');
+        
+        // Récupérer les relations LU ➜ LU pour les blocs (parents)
+        $relations = $DB->get_records('local_training_architecture_lu_to_lu', ['trainingid' => $trainingId]);
+
+
         // Process based on the number of levels in the training
         if ($numberOfLevels == "1") {
             foreach ($records as $record) {
 
                 // Get the short name of the LU
-                $module_name = $DB->get_field('local_training_architecture_lu', 'shortname', ['id' => $record->luid1]);
+                $module_name = $lus[$record->luid1] ?? '';
+                // $module_name = $DB->get_field('local_training_architecture_lu', 'shortname', ['id' => $record->luid1]);
 
                 // Display the path for semester-based trainings
                 if($isSemester == "1") {
-                   
-                    $semester = $DB->get_field('local_training_architecture_training_links', 'semester', ['trainingid' => $trainingId, 'courseid' => $courseId]);
+                    $semester = $semesters[$courseId] ?? null;
+                    // $semester = $DB->get_field('local_training_architecture_training_links', 'semester', ['trainingid' => $trainingId, 'courseid' => $courseId]);
                     if($semester) {
 
                         $this->content->text .= "<div id = 'path-training-{$trainingId}'>";
@@ -1100,17 +1137,21 @@ class block_training_architecture extends block_base {
         else {
             // Process for trainings with multiple levels
             foreach ($records as $record) {
-                $module_name = $DB->get_field('local_training_architecture_lu', 'shortname', ['id' => $record->luid1]);
-
+                // $module_name = $DB->get_field('local_training_architecture_lu', 'shortname', ['id' => $record->luid1]);
+                $module_name = $lus[$record->luid1] ?? '';
                 // Get the ID of the parent LU
-                $block_id = $DB->get_record('local_training_architecture_lu_to_lu', ['trainingid' => $trainingId, 'luid2' => $record->luid1, 'isluid2course' => 'false']);
-                
+                // $block_id = $DB->get_record('local_training_architecture_lu_to_lu', ['trainingid' => $trainingId, 'luid2' => $record->luid1, 'isluid2course' => 'false']);
+                $block_id = array_filter($relations, fn($r) => $r->luid2 == $record->luid1 && $r->isluid2course == 'false');
+                $block_id = reset($block_id); // Récupérer le premier élément (s'il existe)
+
                 // Get the short name of the parent LU
-                $block_name = $DB->get_field('local_training_architecture_lu', 'shortname', ['id' => $block_id->luid1]);
+                // $block_name = $DB->get_field('local_training_architecture_lu', 'shortname', ['id' => $block_id->luid1]);
+                $block_name = isset($block_id) ? $lus[$block_id->luid1] ?? '' : '';
 
                 // Display the path for semester-based trainings
                 if($isSemester == "1") {
-                    $semester = $DB->get_field('local_training_architecture_training_links', 'semester', ['trainingid' => $trainingId, 'courseid' => $courseId]);
+                    $semester = $semesters[$courseId] ?? null;
+                    // $semester = $DB->get_field('local_training_architecture_training_links', 'semester', ['trainingid' => $trainingId, 'courseid' => $courseId]);
                    
                     if($semester) {
 
