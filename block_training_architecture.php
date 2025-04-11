@@ -737,8 +737,12 @@ class block_training_architecture extends block_base {
         global $DB;
 
         // Get the description and ID of the LU
-        $description = $DB->get_field('local_training_architecture_lu', 'description', ['fullname' => $level_name]);
-        $id = $DB->get_field('local_training_architecture_lu', 'id', ['fullname' => $level_name]);
+        $lu = $DB->get_record('local_training_architecture_lu', ['fullname' => $level_name], 'id, description');
+        // $description = $DB->get_field('local_training_architecture_lu', 'description', ['fullname' => $level_name]);
+        // $id = $DB->get_field('local_training_architecture_lu', 'id', ['fullname' => $level_name]);
+        $description = $lu ? $lu->description : null;
+        $id = $lu ? $lu->id : null;
+
 
         // Determine if details should be initially open based on the display context and current course ID
         $openDetails = $this->display_context == 'course' && in_array(optional_param('id', 0, PARAM_INT), $courses);
@@ -1051,9 +1055,12 @@ class block_training_architecture extends block_base {
     protected function display_courses($courses) {
         global $DB, $CFG, $OUTPUT;
 
+        $course_names = $DB->get_records_menu('course', 'id IN (' . implode(',', $courses) . ')', '', 'id, shortname');
+
         foreach ($courses as $course_id) {
 
-            $course_name = $DB->get_field('course', 'shortname', ['id' => $course_id]);
+            // $course_name = $DB->get_field('course', 'shortname', ['id' => $course_id]);
+            $course_name = isset($course_names[$course_id]) ? $course_names[$course_id] : '';
             $course_url = $course_name ? "$CFG->wwwroot/course/view.php?id=$course_id" : '#';
 
             // Display the course context based on the chosen display context
