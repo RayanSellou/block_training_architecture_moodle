@@ -1228,21 +1228,31 @@ class block_training_architecture extends block_base {
 
         $formattedSummary = format_text($course->summary, $course->sumaryformat, ['noclean' => false]);
 
-        return '
-            <div class="course-box" title="' . htmlspecialchars(strip_tags($formattedSummary), ENT_QUOTES, 'UTF-8') . '">
-                <div class="blocktrainingarchitecture-frontpage-course-box">
-                    <div class="blocktrainingarchitecture-course-item">
-                        <div class="blocktrainingarchitecture-course-item-img">
-                            <a href="' . $course_url . '" style="background-image: url(\'' . $imageUrl . '\')"></a>                                
-                        </div>
-                        <div class="blocktrainingarchitecture-course-content-block">
-                            <div class="blocktrainingarchitecture-title">
-                                <a class="blocktrainingarchitecture-title-a" href="' . $course_url . '">' . $course_name . '</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>';
+        // return '
+        //     <div class="course-box" title="' . htmlspecialchars(strip_tags($formattedSummary), ENT_QUOTES, 'UTF-8') . '">
+        //         <div class="blocktrainingarchitecture-frontpage-course-box">
+        //             <div class="blocktrainingarchitecture-course-item">
+        //                 <div class="blocktrainingarchitecture-course-item-img">
+        //                     <a href="' . $course_url . '" style="background-image: url(\'' . $imageUrl . '\')"></a>                                
+        //                 </div>
+        //                 <div class="blocktrainingarchitecture-course-content-block">
+        //                     <div class="blocktrainingarchitecture-title">
+        //                         <a class="blocktrainingarchitecture-title-a" href="' . $course_url . '">' . $course_name . '</a>
+        //                     </div>
+        //                 </div>
+        //             </div>
+        //         </div>
+        //     </div>';
+
+        $context = [
+            'name' => $course_name,
+            'url' => $course_url,
+            'image' => $imageUrl,
+            'summary' => strip_tags($formattedSummary)
+        ];
+    
+        $output = $this->page->get_renderer('block_trainingarchitecture');
+        return $output->render_from_template('block_trainingarchitecture/course_card', $context);
     }
 
     /**
