@@ -219,9 +219,13 @@ class block_training_architecture extends block_base {
                 if ($courseId == optional_param('id', 0, PARAM_INT)) {  
                     $hasPath = true;
                     $course_name = $DB->get_field('course', 'shortname', ['id' => $courseId]);
-                    $this->content->text .= '<hr></hr>';
-                    $this->content->text .= "<div class='blocktrainingarchitecture-path'>" . get_string('path', 'block_training_architecture') . "</div>";
-                    $this->content->text .= "<div class='blocktrainingarchitecture-path'>" . $course_name . "</div>";
+                    // $this->content->text .= '<hr></hr>';
+                    // $this->content->text .= "<div class='blocktrainingarchitecture-path'>" . get_string('path', 'block_training_architecture') . "</div>";
+                    // $this->content->text .= "<div class='blocktrainingarchitecture-path'>" . $course_name . "</div>";
+                    $this->content->text .= $this->render_from_template('block_training_architecture/path_courses_not_in_architecture', [
+                        'path_label' => get_string('path', 'block_training_architecture'),
+                        'course_name' => $course_name
+                    ]);
                     break;
                 }
             }
@@ -314,13 +318,24 @@ class block_training_architecture extends block_base {
                         $this->content->text .= '<hr></hr>';
                     }
 
+                    // $div_class = $this->display_context == 'course' ? 'blocktrainingarchitecture-training-title-elements-course' : 'blocktrainingarchitecture-training-title-elements';
+                    // $training_name = $this->display_context == 'course' ? $training->shortname : $training->fullname;
+
+                    // $header_tag = ($this->display_context == 'course') ? 'h5' : 'h4';
+
+                    // $this->content->text .= "<div class='$div_class'><" . $header_tag . " class='blocktrainingarchitecture-h-4-5-training'>" . get_string('training', 'block_training_architecture') . $training_name . ' (' . $cohort->name . ')</' . $header_tag . '>';
+
+
                     $div_class = $this->display_context == 'course' ? 'blocktrainingarchitecture-training-title-elements-course' : 'blocktrainingarchitecture-training-title-elements';
                     $training_name = $this->display_context == 'course' ? $training->shortname : $training->fullname;
+                    $header_tag = $this->display_context == 'course' ? 'h5' : 'h4';
 
-                    $header_tag = ($this->display_context == 'course') ? 'h5' : 'h4';
-
-                    $this->content->text .= "<div class='$div_class'><" . $header_tag . " class='blocktrainingarchitecture-h-4-5-training'>" . get_string('training', 'block_training_architecture') . $training_name . ' (' . $cohort->name . ')</' . $header_tag . '>';
-
+                    $this->content->text .= $this->render_from_template('block_training_architecture/training_titles', [
+                        'div_class' => $div_class,
+                        'training_name' => $training_name,
+                        'cohort_name' => $cohort->name,
+                        'header_tag' => $header_tag
+                    ]);
 
                     // Get the description of the training
                     $trainingDescription = $DB->get_field('local_training_architecture_training', 'description', ['id' => $trainingId]);
@@ -333,15 +348,23 @@ class block_training_architecture extends block_base {
 
                     // Display by semester
                     if($training->issemester == 1) {
-                        $this->content->text .= "<div class='blocktrainingarchitecture-semester-elements'> <span class='$span_class'>" . get_string('view_by_semester', 'block_training_architecture') . "</span>
-                        <label class='blocktrainingarchitecture-switch'>
-                            <input id=\"switch-{$training->id}\" type='checkbox' checked>
-                            <span class='blocktrainingarchitecture-slider blocktrainingarchitecture-round'></span>
-                        </label></div>";
+                        // $this->content->text .= "<div class='blocktrainingarchitecture-semester-elements'> <span class='$span_class'>" . get_string('view_by_semester', 'block_training_architecture') . "</span>
+                        // <label class='blocktrainingarchitecture-switch'>
+                        //     <input id=\"switch-{$training->id}\" type='checkbox' checked>
+                        //     <span class='blocktrainingarchitecture-slider blocktrainingarchitecture-round'></span>
+                        // </label></div>";
+                        $this->content->text .= $this->render_from_template('block_training_architecture/switch_semester', [
+                            'span_class' => $span_class,
+                            'training_id' => $training->id
+                        ]);
 
                         $this->content->text .= "</div>";
 
-                        $this->content->text .= "<div id=\"semester-levels-semester-{$training->id}\">"; 
+                        // $this->content->text .= "<div id=\"semester-levels-semester-{$training->id}\">"; 
+                        $this->content->text .= $this->render_from_template('block_training_architecture/semester_levels', [
+                            'training_id' => $training->id
+                        ]);
+
 
                         // Check if there is architecture to display
                         if ($DB->record_exists('local_training_architecture_lu_to_lu', ['trainingid' => $trainingId, 'isluid2course' => 'true'])) {
@@ -356,7 +379,11 @@ class block_training_architecture extends block_base {
                             $this->content->text .= '</div>'; 
     
                             // And display levels not semester, and hide them (in js we will hide or display this section, depends on user choice)
-                            $this->content->text .= "<div class='semester-levels' id=\"semester-levels-{$training->id}\">"; 
+                            $this->content->text .= $this->render_from_template('block_training_architecture/no_semester_levels_container', [
+                                'training_id' => $training->id
+                            ]);
+
+                            // $this->content->text .= "<div class='semester-levels' id=\"semester-levels-{$training->id}\">"; 
     
                             foreach ($sortedRootLevels as $root_level) {
                                 $this->display_levels($root_level->luid1, $training->id);
@@ -365,7 +392,8 @@ class block_training_architecture extends block_base {
                             $this->content->text .= '</div>'; 
                         }
                         else {
-                            $this->content->text .= '<div class="blocktrainingarchitecture-training-no-courses">' . get_string('training_no_courses', 'block_training_architecture') . '</div>'; 
+                            // $this->content->text .= '<div class="blocktrainingarchitecture-training-no-courses">' . get_string('training_no_courses', 'block_training_architecture') . '</div>'; 
+                            $this->content->text .= $this->render_from_template('block_training_architecture/no_course', []);
                         }
                     }
 
@@ -379,7 +407,8 @@ class block_training_architecture extends block_base {
                             }
                         }
                         else {
-                            $this->content->text .= '<div class="blocktrainingarchitecture-training-no-courses">' . get_string('training_no_courses', 'block_training_architecture') . '</div>'; 
+                            // $this->content->text .= '<div class="blocktrainingarchitecture-training-no-courses">' . get_string('training_no_courses', 'block_training_architecture') . '</div>'; 
+                            $this->content->text .= $this->render_from_template('block_training_architecture/no_course', []);
                         }
                     }
 
