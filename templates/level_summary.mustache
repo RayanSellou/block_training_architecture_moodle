@@ -1,0 +1,23 @@
+<details {{#open_details}}open{{/open_details}}>
+  <summary class="{{#display_context}}course-context{{/display_context}}{{^display_context}}dashboard-context{{/display_context}}" {{margin_style_1}}>{{level_name}}</summary>
+
+  {{#description}}
+    {{> mod_description_modal description=description}}
+  {{/description}}
+
+  <div {{margin_style_2}}>
+    {{#display_context}}
+      {{#courses}}
+        {{> display_courses}}
+      {{/courses}}
+    {{/display_context}}
+
+    {{^display_context}}
+      <div class="courses row row">
+        {{#courses}}
+          {{> display_courses}}
+        {{/courses}}
+      </div>
+    {{/display_context}}
+  </div>
+</details>

@@ -1,0 +1,14 @@
+<div id="path-training-{{training_id}}">
+    <div class="blocktrainingarchitecture-path">{{path_label}}</div>
+    {{#items}}
+    <div class="blocktrainingarchitecture-path-{{level}}">➤ {{name}}</div>
+    {{/items}}
+</div>
+
+<div id="path-training-semester-{{training_id}}">
+    <div class="blocktrainingarchitecture-path">{{path_label}}</div>
+    <div class="blocktrainingarchitecture-path">➤ {{semester_label}}</div>
+    {{#items_with_semester}}
+    <div class="blocktrainingarchitecture-path-{{level}}">➤ {{name}}</div>
+    {{/items_with_semester}}
+</div>

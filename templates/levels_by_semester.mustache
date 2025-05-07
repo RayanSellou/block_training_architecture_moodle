@@ -1,0 +1,29 @@
+{{#levels_for_template}}
+    <div class="level" style="margin-left: {{margin_left}}px;">
+        <div class="level-name">
+            {{level_name}}
+        </div>
+
+        {{#description}}
+            <div class="level-description">
+                <a href="#{{level_id}}" class="level-description-link">Voir la description</a>
+                <div id="{{level_id}}" class="modal">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <p>{{description}}</p>
+                    </div>
+                </div>
+            </div>
+        {{/description}}
+
+        <div class="level-courses">
+            {{#courses}}
+                <div class="course">
+                    <a href="{{{course_url}}}">
+                        {{{course_name}}}
+                    </a>
+                </div>
+            {{/courses}}
+        </div>
+    </div>
+{{/levels_for_template}}

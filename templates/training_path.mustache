@@ -1,0 +1,14 @@
+{{#path_data}}
+    <div id="path-training-{{training_id}}">
+        <div class="path">{{#is_semester}}{{#semester}}{{get_string 'semester' 'block_training_architecture'}}{{semester}}{{/semester}}{{/is_semester}}{{^is_semester}}{{get_string 'path' 'block_training_architecture'}}{{/is_semester}}</div>
+        ➤ {{module_name}}
+        <div class="path-1">➤ {{course_name}}</div>
+    </div>
+    {{#is_semester}}
+        <div id="path-training-semester-{{training_id}}">
+            <div class="path">{{#semester}}{{get_string 'semester' 'block_training_architecture'}}{{semester}}{{/semester}}</div>
+            ➤ {{module_name}}
+            <div class="path-1">➤ {{course_name}}</div>
+        </div>
+    {{/is_semester}}
+{{/path_data}}

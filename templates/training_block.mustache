@@ -1,0 +1,46 @@
+<div class="training-block">
+  <h4>{{training_name}} ({{cohort_name}})</h4>
+
+  {{#description}}
+    <div class="training-description">
+      <button data-modal-target="description-{{training_id}}">Voir la description</button>
+      <div id="description-{{training_id}}" class="modal">{{description}}</div>
+    </div>
+  {{/description}}
+
+  {{#has_semesters}}
+    <div class="semester-switch">
+      <span>Voir par semestre</span>
+      <label class="switch">
+        <input id="switch-{{training_id}}" type="checkbox" checked>
+        <span class="slider round"></span>
+      </label>
+    </div>
+  {{/has_semesters}}
+
+  <div class="courses-in-architecture">
+    {{#courses_in_architecture}}
+      <div class="course">
+        <a href="{{course_url}}">{{course_name}}</a>
+      </div>
+    {{/courses_in_architecture}}
+  </div>
+
+  {{#root_levels}}
+  <div class="collapsible root-level">
+    <button class="collapse-toggle">{{level_name}}</button>
+    <div class="content">
+      {{#children}}
+        <div class="course-child">
+          {{#course_url}}
+            <a href="{{course_url}}">{{course_name}}</a>
+          {{/course_url}}
+          {{^course_url}}
+            {{name}}
+          {{/course_url}}
+        </div>
+      {{/children}}
+    </div>
+  </div>
+{{/root_levels}}
+</div>

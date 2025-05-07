@@ -1,0 +1,18 @@
+<div class="course-content-block" style="margin-left: {{margin_left}}px;">
+    <div class="course-section-block">
+        <div class="course-section-header-block">{{level_name}}</div>
+        {{#description}}
+            <div class="description-modal">{{description}}</div>
+        {{/description}}
+    </div>
+</div>
+
+{{#courses}}
+    <div class="course-list" style="margin-left: {{margin_left}}px;">
+        <p>Course: {{.}}</p>
+    </div>
+{{/courses}}
+
+{{#children}}
+    {{> block_training_architecture/level_display }}
+{{/children}}
