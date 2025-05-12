@@ -1,0 +1,19 @@
+<div class="{{containerclass}}">
+    <{{headertag}} class="h-4-5-training">
+        {{#str}}training, block_training_architecture{{/str}} {{trainingname}} ({{cohortname}})
+    </{{headertag}}>
+
+    {{#trainingdescription}}
+        {{{descriptionmodal}}}
+    {{/trainingdescription}}
+
+    {{#issemester}}
+        <div class="semester-elements">
+            <span class="{{contextclass}}">{{#str}}view_by_semester, block_training_architecture{{/str}}</span>
+            <label class="switch">
+                <input id="switch-{{id}}" type="checkbox" checked>
+                <span class="slider round"></span>
+            </label>
+        </div>
+    {{/issemester}}
+</div>

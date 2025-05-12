@@ -1,29 +1,24 @@
-{{#levels_for_template}}
-    <div class="level" style="margin-left: {{margin_left}}px;">
-        <div class="level-name">
+{{#levels}}
+    {{#is_first_level}}
+        <div class="{{class}}" style="margin-left: {{margin_left}}px;">
             {{level_name}}
+            {{{description_modal}}}
         </div>
+    {{/is_first_level}}
 
-        {{#description}}
-            <div class="level-description">
-                <a href="#{{level_id}}" class="level-description-link">Voir la description</a>
-                <div id="{{level_id}}" class="modal">
-                    <div class="modal-content">
-                        <span class="close">&times;</span>
-                        <p>{{description}}</p>
-                    </div>
-                </div>
+    {{{children}}}
+
+    {{#has_courses}}
+        <details {{#open}}open{{/open}}>
+            <summary class="{{summary_class}}" style="margin-left: {{margin_style_1}}px;">
+                {{level_name}}
+                {{{description_modal}}}
+            </summary>
+            <div style="margin-left: {{margin_style_2}}px;">
+                {{^is_course_context}}<div class="courses row">{{/is_course_context}}
+                    {{{courses_html}}}
+                {{^is_course_context}}</div>{{/is_course_context}}
             </div>
-        {{/description}}
-
-        <div class="level-courses">
-            {{#courses}}
-                <div class="course">
-                    <a href="{{{course_url}}}">
-                        {{{course_name}}}
-                    </a>
-                </div>
-            {{/courses}}
-        </div>
-    </div>
-{{/levels_for_template}}
+        </details>
+    {{/has_courses}}
+{{/levels}}

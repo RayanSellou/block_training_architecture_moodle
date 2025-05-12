@@ -1,8 +1,11 @@
-<div class="courses-not-in-architecture">
-    <h3>{{#str}}courses_not_in_architecture, block_training_architecture{{/str}}</h3>
-    {{#courses}}
-        <div class="course-item">
-            <a href="{{course_url}}">{{course_name}}</a>
-        </div>
-    {{/courses}}
+{{#show_wrapper}}
+<div class="content">
+    <div class="courses row row">
+        {{{courses_html}}}
+    </div>
 </div>
+{{/show_wrapper}}
+
+{{^show_wrapper}}
+{{{courses_html}}}
+{{/show_wrapper}}
