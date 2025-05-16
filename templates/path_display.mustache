@@ -1,44 +1,44 @@
 {{#singleLevel}}
     {{#isSemester}}
         <div id="path-training-{{trainingId}}">
-            <div class="path">{{pathLabel}}</div>
+            <div class="blocktrainingarchitecture-path">{{pathLabel}}</div>
             ➤ {{moduleName}}
-            <div class="path-1">➤ {{courseName}}</div>
+            <div class="blocktrainingarchitecture-path-1">➤ {{courseName}}</div>
         </div>
         <div id="path-training-semester-{{trainingId}}">
-            <div class="path">{{pathLabel}}</div>
+            <div class="blocktrainingarchitecture-path">{{pathLabel}}</div>
             ➤ {{semesterLabel}}{{semester}}
-            <div class="path-1">➤ {{moduleName}}</div>
-            <div class="path-2">➤ {{courseName}}</div>
+            <div class="blocktrainingarchitecture-path-1">➤ {{moduleName}}</div>
+            <div class="blocktrainingarchitecture-path-2">➤ {{courseName}}</div>
         </div>
     {{/isSemester}}
     {{^isSemester}}
-        <div class="path">{{pathLabel}}</div>
+        <div class="blocktrainingarchitecture-path">{{pathLabel}}</div>
         ➤ {{moduleName}}
-        <div class="path-1">➤ {{courseName}}</div>
+        <div class="blocktrainingarchitecture-path-1">➤ {{courseName}}</div>
     {{/isSemester}}
 {{/singleLevel}}
 
 {{^singleLevel}}
     {{#isSemester}}
         <div id="path-training-{{trainingId}}">
-            <div class="path">{{pathLabel}}</div>
+            <div class="blocktrainingarchitecture-path">{{pathLabel}}</div>
             ➤ {{blockName}}
-            <div class="path-1">➤ {{moduleName}}</div>
-            <div class="path-2">➤ {{courseName}}</div>
+            <div class="blocktrainingarchitecture-path-1">➤ {{moduleName}}</div>
+            <div class="blocktrainingarchitecture-path-2">➤ {{courseName}}</div>
         </div>
         <div id="path-training-semester-{{trainingId}}">
-            <div class="path">{{pathLabel}}</div>
+            <div class="blocktrainingarchitecture-path">{{pathLabel}}</div>
             ➤ {{semesterLabel}}{{semester}}
-            <div class="path-1">➤ {{blockName}}</div>
-            <div class="path-2">➤ {{moduleName}}</div>
-            <div class="path-3">➤ {{courseName}}</div>
+            <div class="blocktrainingarchitecture-path-1">➤ {{blockName}}</div>
+            <div class="blocktrainingarchitecture-path-2">➤ {{moduleName}}</div>
+            <div class="blocktrainingarchitecture-path-3">➤ {{courseName}}</div>
         </div>
     {{/isSemester}}
     {{^isSemester}}
-        <div class="path">{{pathLabel}}</div>
+        <div class="blocktrainingarchitecture-path">{{pathLabel}}</div>
         ➤ {{blockName}}
-        <div class="path-1">➤ {{moduleName}}</div>
-        <div class="path-2">➤ {{courseName}}</div>
+        <div class="blocktrainingarchitecture-path-1">➤ {{moduleName}}</div>
+        <div class="blocktrainingarchitecture-path-2">➤ {{courseName}}</div>
     {{/isSemester}}
 {{/singleLevel}}

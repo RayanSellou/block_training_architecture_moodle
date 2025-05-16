@@ -1,27 +1,27 @@
-body.path-block-training_architecture .blocktrainingarchitecture-course-content-block .blocktrainingarchitecture-course-section-block .blocktrainingarchitecture-course-section-header-block {
+.blocktrainingarchitecture-course-content-block .blocktrainingarchitecture-course-section-block .blocktrainingarchitecture-course-section-header-block {
     /*background-color: #2196F3 !important;*/      /* Uncomment if you want to use your own color */
     background-color: var(--secondary);            /* Comment if you want to use your own color */
     padding: 15px;
     border-radius: 5px;
 }
 
-body.path-block-training_architecture details {
+details {
     margin-top: 15px;
     margin-bottom: 15px;
 }
 
-body.path-block-training_architecture #custom-modal-content {
+#custom-modal-content {
     min-width: 680px;
 }
 
 @media (min-width: 576px) {
-    body.path-block-training_architecture #custom-modal {
+     #custom-modal {
         max-width: 680px;
         margin: 1.75rem auto;
     }
 }
   
-body.path-block-training_architecture .blocktrainingarchitecture-title {
+.blocktrainingarchitecture-title {
     font-size: 16px;
     font-weight: 600;
     line-height: 1.4;
@@ -33,7 +33,7 @@ body.path-block-training_architecture .blocktrainingarchitecture-title {
     text-overflow: ellipsis;
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-title-a {
+.blocktrainingarchitecture-title-a {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -46,22 +46,22 @@ body.path-block-training_architecture .blocktrainingarchitecture-title-a {
     } */
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-title-a:hover {
+.blocktrainingarchitecture-title-a:hover {
     color: black;
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-course-content-block {
+.blocktrainingarchitecture-course-content-block {
     display: flex;
     align-items: center;
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-btn-modal-training {
+.blocktrainingarchitecture-btn-modal-training {
     margin-left: 10px;
     border: none;
     background-color: transparent;
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-img-description {
+.blocktrainingarchitecture-img-description {
     transition: all .2s ease-in-out;
 
     /* &:hover {
@@ -69,15 +69,15 @@ body.path-block-training_architecture .blocktrainingarchitecture-img-description
     } */
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-img-description:hover {
+.blocktrainingarchitecture-img-description:hover {
     transform: scale(1.25);
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-h-4-5-training {
+.blocktrainingarchitecture-h-4-5-training {
     margin: 0;
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-blue {
+.blocktrainingarchitecture-blue {
     text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
@@ -85,41 +85,41 @@ body.path-block-training_architecture .blocktrainingarchitecture-blue {
     display: inline-block;
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-green {
+.blocktrainingarchitecture-green {
     color: rgb(39, 192, 39);
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-path {
+.blocktrainingarchitecture-path {
     text-align: center;
     font-weight: bold;
     margin-bottom: 10px;
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-path-1 {
+.blocktrainingarchitecture-path-1 {
     margin-left: 20px;
     margin-top: 5px;
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-path-2 {
+.blocktrainingarchitecture-path-2 {
     margin-left: 40px;
     margin-top: 5px;
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-path-3 {
+.blocktrainingarchitecture-path-3 {
     margin-left: 60px;
     margin-top: 5px;
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-first-level {
+.blocktrainingarchitecture-first-level {
     font-size: 18px;
     margin-top: 15px;
 }
 
-body.path-block-training_architecture hr {
+hr {
     border-bottom: 6px solid #e9ecef;
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-training-title-elements {
+.blocktrainingarchitecture-training-title-elements {
     display: flex;
     gap: 30px;
     justify-content: center;
@@ -127,32 +127,32 @@ body.path-block-training_architecture .blocktrainingarchitecture-training-title-
     margin-bottom: 15px;
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-semester-elements {
+.blocktrainingarchitecture-semester-elements {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-training-no-courses {
+.blocktrainingarchitecture-training-no-courses {
     text-align: center;
     margin-top: 15px;
 }
 
 /* Display context*/
 
-body.path-block-training_architecture .blocktrainingarchitecture-course-context {
+.blocktrainingarchitecture-course-context {
     font-size: .9375rem;
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-first-level-margin {
+.blocktrainingarchitecture-first-level-margin {
     margin-top: 15px;
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-dashboard-context {
+.blocktrainingarchitecture-dashboard-context {
     font-size: 18px;
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-training-title-elements-course {
+.blocktrainingarchitecture-training-title-elements-course {
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -162,20 +162,20 @@ body.path-block-training_architecture .blocktrainingarchitecture-training-title-
 
 /* Courses */ 
 
-body.path-block-training_architecture .blocktrainingarchitecture-row {
+.blocktrainingarchitecture-row {
     display: flex;
     flex-wrap: wrap;
     margin-right: -15px;
     margin-left: -15px;
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-frontpage-course-box {
+.blocktrainingarchitecture-frontpage-course-box {
     border: 1px solid #e9ecef;
     border-radius: 10px;
     margin-bottom: 25px;
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-frontpage-course-box .blocktrainingarchitecture-course-item {
+.blocktrainingarchitecture-frontpage-course-box .blocktrainingarchitecture-course-item {
     border-radius: 10px;
     position: relative;
     padding: 12px 10px 6px;
@@ -184,7 +184,7 @@ body.path-block-training_architecture .blocktrainingarchitecture-frontpage-cours
     backdrop-filter: blur(17px);
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-frontpage-course-box .blocktrainingarchitecture-course-item .blocktrainingarchitecture-course-item-img {
+.blocktrainingarchitecture-frontpage-course-box .blocktrainingarchitecture-course-item .blocktrainingarchitecture-course-item-img {
     position: relative;
     overflow: hidden;
     z-index: 1;
@@ -192,7 +192,7 @@ body.path-block-training_architecture .blocktrainingarchitecture-frontpage-cours
     margin: 0 auto 14px;
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-frontpage-course-box .blocktrainingarchitecture-course-item .blocktrainingarchitecture-course-item-img a {
+.blocktrainingarchitecture-frontpage-course-box .blocktrainingarchitecture-course-item .blocktrainingarchitecture-course-item-img a {
     width: 100%;
     display: block;
     padding-top: 40%;
@@ -202,24 +202,24 @@ body.path-block-training_architecture .blocktrainingarchitecture-frontpage-cours
 
 /* Switch semester */
 
-body.path-block-training_architecture label {
+label {
     margin-bottom: 0;
 }
 
-body.path-block-training_architecture .trainingarchitecture-switch {
+.blocktrainingarchitecture-switch {
     position: relative;
     display: inline-block;
     width: 45px;
     height: 25px;
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-switch input {
+.blocktrainingarchitecture-switch input {
     opacity: 0;
     width: 0;
     height: 0;
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-slider {
+.blocktrainingarchitecture-slider {
     position: absolute;
     cursor: pointer;
     top: 0;
@@ -231,7 +231,7 @@ body.path-block-training_architecture .blocktrainingarchitecture-slider {
     transition: .4s;
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-slider:before {
+.blocktrainingarchitecture-slider:before {
     position: absolute;
     content: "";
     height: 17px;
@@ -243,32 +243,32 @@ body.path-block-training_architecture .blocktrainingarchitecture-slider:before {
     transition: .4s;
 }
 
-body.path-block-training_architecture input:checked + .blocktrainingarchitecture-slider {
+input:checked + .blocktrainingarchitecture-slider {
     background-color: #2196F3;
 }
 
-body.path-block-training_architecture input:focus + .blocktrainingarchitecture-slider {
+input:focus + .blocktrainingarchitecture-slider {
     box-shadow: 0 0 1px var(--secondary);
 }
 
-body.path-block-training_architecture input:checked + .blocktrainingarchitecture-slider:before {
+input:checked + .blocktrainingarchitecture-slider:before {
     -webkit-transform: translateX(19px);
     -ms-transform: translateX(19px);
     transform: translateX(19px);
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-slider.blocktrainingarchitecture-round {
+.blocktrainingarchitecture-slider.blocktrainingarchitecture-round {
     border-radius: 34px;
 }
 
-body.path-block-training_architecture .blocktrainingarchitecture-slider.blocktrainingarchitecture-round:before {
+.blocktrainingarchitecture-slider.blocktrainingarchitecture-round:before {
     border-radius: 50%;
 }
 
 /* Responsive */
 
 @media(max-width: 1380px){
-    body.path-block-training_architecture .blocktrainingarchitecture-training-title-elements {
+    .blocktrainingarchitecture-training-title-elements {
         display: flex;
         flex-direction: column!important;
         gap: 15px!important;
@@ -276,41 +276,41 @@ body.path-block-training_architecture .blocktrainingarchitecture-slider.blocktra
 }
 
 @media(min-width: 500px){
-    body.path-block-training_architecture .blocktrainingarchitecture-course-box{
+    .blocktrainingarchitecture-course-box{
         width:100%;
     }
 }
 
 @media(min-width: 800px){
-    body.path-block-training_architecture .blocktrainingarchitecture-course-box{
+    .blocktrainingarchitecture-course-box{
         width:calc(25% - 14px);
         margin:0 6px;
     }
 }
 
 @media(min-width: 1040px){
-    body.path-block-training_architecture .blocktrainingarchitecture-course-box{
+    .blocktrainingarchitecture-course-box{
         width:calc(33% - 14px);
         margin:0 6px;
     }
 }
 
 @media(min-width: 1210px){
-    body.path-block-training_architecture .blocktrainingarchitecture-course-box{
+    .blocktrainingarchitecture-course-box{
         width:calc(25% - 14px);
         margin:0 6px;
     }
 }
 
 @media(min-width: 1560px){
-    body.path-block-training_architecture .blocktrainingarchitecture-course-box{
+    .blocktrainingarchitecture-course-box{
         width:calc(20% - 10px);
         margin:0 4px;
     }
 }
 
 @media(min-width: 2060px){
-    body.path-block-training_architecture .blocktrainingarchitecture-course-box{
+    .blocktrainingarchitecture-course-box{
         width:calc(16% - 10px);
         margin:0 4px;
     }

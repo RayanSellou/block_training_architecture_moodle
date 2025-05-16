@@ -11,7 +11,7 @@ class block_training_architecture_renderer extends plugin_renderer_base {
             'type' => $type,
             'description' => $description,
             'image_url' => $CFG->wwwroot . "/blocks/training_architecture/images/description.png",
-            'modal_title' => get_string('descriptionModalTitle', 'block_training_architecture'),
+            'modal_title' => get_string('descriptionmodaltitle', 'block_training_architecture'),
         ];
     
         return $this->render_from_template('block_training_architecture/description_modal', $data);
@@ -47,7 +47,7 @@ class block_training_architecture_renderer extends plugin_renderer_base {
     
         $isCurrentCourse = ($courseId == $courseUrlId);
         $actual_course_icon = $isCurrentCourse
-            ? $OUTPUT->pix_icon('t/online', get_string('actualCourse', 'block_training_architecture'), 'moodle', ['class' => 'green'])
+            ? $OUTPUT->pix_icon('t/online', get_string('actualcourse', 'block_training_architecture'), 'moodle', ['class' => 'green'])
             : '';
     
         $template_data = [
