@@ -1,7 +1,9 @@
 {{#levels}}
     {{#is_first_level}}
         <div class="{{class}}" style="margin-left: {{margin_left}}px;">
-            {{level_name}}
+            <span style="display: inline-block; padding: 6px 12px; border-radius: 6px;">
+                {{level_name}}
+            </span>
             {{{description_modal}}}
         </div>
     {{/is_first_level}}
@@ -9,7 +11,7 @@
     {{{children}}}
 
     {{#has_courses}}
-        <details {{#open}}open{{/open}}>
+        <details style="margin-left: {{margin_left}}px;" {{#open}}open{{/open}}>
             <summary class="{{summary_class}}" style="margin-left: {{margin_style_1}}px;">
                 {{level_name}}
                 {{{description_modal}}}

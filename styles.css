@@ -50,9 +50,12 @@ details {
     color: black;
 }
 
-.blocktrainingarchitecture-course-content-block {
+.course-content-block {
     display: flex;
     align-items: center;
+    /* flex-direction: column !important; */
+    /* align-items: flex-start !important; */
+    /* align-items: stretch; */
 }
 
 .blocktrainingarchitecture-btn-modal-training {
@@ -315,3 +318,4 @@ input:checked + .blocktrainingarchitecture-slider:before {
         margin:0 4px;
     }
 }
+

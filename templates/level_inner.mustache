@@ -1,0 +1,20 @@
+<div class="blocktrainingarchitecture-course-section-block" style="margin-left: {{margin_left}}px;">
+  {{^no_header}}
+    <div class="blocktrainingarchitecture-course-section-header-block {{class}}">
+      {{level_name}}
+      {{{description_modal}}}
+    </div>
+  {{/no_header}}
+
+  {{#summary}}
+    {{{summary}}}
+  {{/summary}}
+
+  {{^summary}}
+    {{{courses_html}}}
+  {{/summary}}
+
+  {{#children}}
+    {{> block_training_architecture/level_inner}}
+  {{/children}}
+</div>

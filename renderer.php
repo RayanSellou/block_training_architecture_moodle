@@ -61,6 +61,15 @@ class block_training_architecture_renderer extends plugin_renderer_base {
         return $this->render_from_template('block_training_architecture/course_course_context', $template_data);
     }
 
+    public function render_double_div_close() {
+        return $this->render_from_template('block_training_architecture/double_div_close', []);
+    }
+
+    public function render_courses_not_in_architecture() { 
+        return $this->render_from_template('block_training_architecture/courses_not_in_architecture', []);
+    }
+    
+
     /**
      * Render the path display
      * 
@@ -71,14 +80,7 @@ class block_training_architecture_renderer extends plugin_renderer_base {
         return $this->render_from_template('block_training_architecture/path_display', $data);
     }
 
-    public function render_courses_not_in_architecture($courses_html, $show_wrapper) {
-        $data = [
-            'courses_html' => $courses_html,
-            'show_wrapper' => $show_wrapper
-        ];
     
-        return $this->render_from_template('block_training_architecture/courses_not_in_architecture', $data);
-    }
 
     public function render_levels_by_semester($data) {
         return $this->render_from_template('block_training_architecture/levels_by_semester', $data);
@@ -95,7 +97,7 @@ class block_training_architecture_renderer extends plugin_renderer_base {
         ]);
     }
 
-    public function render_summary($level_name, $description, $id, $openDetails, $class, $margin_style_semester, $margin_style_courses, $content_courses_html) {
+    public function render_summary($level_name, $description, $id, $openDetails, $class, $margin_style_semester, $margin_style_courses, $courses_html) {
         return $this->render_from_template('block_training_architecture/summary', [
             'level_name' => $level_name,
             'description_modal' => $description ? $this->render_description_modal($description, $id, 'Lu') : '',
@@ -103,7 +105,7 @@ class block_training_architecture_renderer extends plugin_renderer_base {
             'class' => $class,
             'margin_style_semester' => $margin_style_semester,
             'margin_style_courses' => $margin_style_courses,
-            'content_courses_html' => $content_courses_html
+            'courses_html' => $courses_html
         ]);
     }
 
@@ -121,20 +123,33 @@ class block_training_architecture_renderer extends plugin_renderer_base {
         ]);
     }
 
-    public function render_training_header($training, $cohortname, $context) {
-        $templatecontext = [
-            'containerclass' => $context == 'course' ? 'training-title-elements-course' : 'training-title-elements',
-            'trainingname' => $context == 'course' ? $training->shortname : $training->fullname,
-            'cohortname' => $cohortname,
-            'headertag' => $context == 'course' ? 'h5' : 'h4',
-            'contextclass' => $context == 'course' ? 'course-context' : 'dashboard-context',
-            'issemester' => $training->issemester == 1,
-            'id' => $training->id,
-            'trainingdescription' => !empty($training->description),
-            'descriptionmodal' => $this->render_description_modal($training->description, $training->id, 'Training')
-        ];
+    // public function render_training_header($training, $cohortname, $context) {
+    //     $templatecontext = [
+    //         'containerclass' => $context == 'course' ? 'training-title-elements-course' : 'training-title-elements',
+    //         'trainingname' => $context == 'course' ? $training->shortname : $training->fullname,
+    //         'cohortname' => $cohortname,
+    //         'headertag' => $context == 'course' ? 'h5' : 'h4',
+    //         'contextclass' => $context == 'course' ? 'course-context' : 'dashboard-context',
+    //         'issemester' => $training->issemester == 1,
+    //         'id' => $training->id,
+    //         'trainingdescription' => !empty($training->description),
+    //         'descriptionmodal' => $this->render_description_modal($training->description, $training->id, 'Training')
+    //     ];
     
-        return $this->render_from_template('block_training_architecture/training', $templatecontext);
+    //     return $this->render_from_template('block_training_architecture/training', $templatecontext);
+    // }
+
+    public function render_training_header($training, $cohort_name, $context) {
+        $template = new stdClass();
+        $template->div_class = $context === 'course' ? 'training-title-elements-course' : 'training-title-elements';
+        $template->header_tag = $context === 'course' ? 'h5' : 'h4';
+        $template->training_name = $context === 'course' ? $training->shortname : $training->fullname;
+        $template->cohort_name = $cohort_name;
+    
+        $template->show_description_modal = $context !== 'course';
+        $template->description_modal = $this->render_description_modal($training->description, $training->id, 'Training');
+    
+        return $this->render_from_template('block_training_architecture/training_header', $template);
     }
 
     public function render_course_path($courseName) {
@@ -169,6 +184,27 @@ class block_training_architecture_renderer extends plugin_renderer_base {
         return $this->render_from_template('block_training_architecture/semester_levels_open', [
             'trainingid' => $trainingid
         ]);
+    }
+
+    public function render_levels_recursive($data) {
+        return $this->render_from_template('block_training_architecture/level_recursive', $data);
+    }
+
+    public function render_semester_wrapper($trainingid, $content) {
+        return $this->render_from_template('block_training_architecture/semester_wrapper', [
+            'training_id' => $trainingid,
+            'content' => $content
+        ]);
+    }
+
+    public function render_semester_toggle($trainingid) {
+        return $this->render_from_template('block_training_architecture/semester_toggle', [
+            'id' => $trainingid
+        ]);
+    }
+
+    public function render_semester_levels_wrapper($data) {
+        return $this->render_from_template('block_training_architecture/semester_levels_wrapper', $data);
     }
     
 
