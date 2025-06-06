@@ -43,9 +43,6 @@ details {
     display: inline-block;
     color: black;
 
-    /* &:hover {
-        color: black;
-    } */
 }
 
 .blocktrainingarchitecture-title-a:hover {
@@ -55,9 +52,6 @@ details {
 .course-content-block {
     display: flex;
     align-items: center;
-    /* flex-direction: column !important; */
-    /* align-items: flex-start !important; */
-    /* align-items: stretch; */
 }
 
 .blocktrainingarchitecture-btn-modal-training {
@@ -69,9 +63,6 @@ details {
 .blocktrainingarchitecture-img-description {
     transition: all .2s ease-in-out;
 
-    /* &:hover {
-        transform: scale(1.25);
-    } */
 }
 
 .blocktrainingarchitecture-img-description:hover {
