@@ -69,13 +69,6 @@ class block_training_architecture_renderer extends plugin_renderer_base {
         return $this->render_from_template('block_training_architecture/courses_not_in_architecture', []);
     }
     
-
-    /**
-     * Render the path display
-     * 
-     * @param array $data The template data
-     * @return string HTML output
-     */
     public function render_path_display(array $data) {
         return $this->render_from_template('block_training_architecture/path_display', $data);
     }
@@ -115,43 +108,6 @@ class block_training_architecture_renderer extends plugin_renderer_base {
         ]);
     }
 
-    public function render_section_header($level_name, $description, $id, $class) {
-        return $this->render_from_template('block_training_architecture/section_header', [
-            'level_name' => $level_name,
-            'description_modal' => $description ? $this->render_description_modal($description, $id, 'Lu') : '',
-            'class' => $class
-        ]);
-    }
-
-    // public function render_training_header($training, $cohortname, $context) {
-    //     $templatecontext = [
-    //         'containerclass' => $context == 'course' ? 'training-title-elements-course' : 'training-title-elements',
-    //         'trainingname' => $context == 'course' ? $training->shortname : $training->fullname,
-    //         'cohortname' => $cohortname,
-    //         'headertag' => $context == 'course' ? 'h5' : 'h4',
-    //         'contextclass' => $context == 'course' ? 'course-context' : 'dashboard-context',
-    //         'issemester' => $training->issemester == 1,
-    //         'id' => $training->id,
-    //         'trainingdescription' => !empty($training->description),
-    //         'descriptionmodal' => $this->render_description_modal($training->description, $training->id, 'Training')
-    //     ];
-    
-    //     return $this->render_from_template('block_training_architecture/training', $templatecontext);
-    // }
-
-    public function render_training_header($training, $cohort_name, $context) {
-        $template = new stdClass();
-        $template->div_class = $context === 'course' ? 'training-title-elements-course' : 'training-title-elements';
-        $template->header_tag = $context === 'course' ? 'h5' : 'h4';
-        $template->training_name = $context === 'course' ? $training->shortname : $training->fullname;
-        $template->cohort_name = $cohort_name;
-    
-        $template->show_description_modal = $context !== 'course';
-        $template->description_modal = $this->render_description_modal($training->description, $training->id, 'Training');
-    
-        return $this->render_from_template('block_training_architecture/training_header', $template);
-    }
-
     public function render_course_path($courseName) {
         return $this->render_from_template('block_training_architecture/course_path', [
             'coursename' => format_string($courseName)
@@ -174,27 +130,8 @@ class block_training_architecture_renderer extends plugin_renderer_base {
         return $this->render_from_template('block_training_architecture/double_hr', []);
     }
 
-    public function render_semester_levels_semester_open($trainingid) {
-        return $this->render_from_template('block_training_architecture/semester_levels_semester_open', [
-            'trainingid' => $trainingid
-        ]);
-    }
-    
-    public function render_semester_levels_open($trainingid) {
-        return $this->render_from_template('block_training_architecture/semester_levels_open', [
-            'trainingid' => $trainingid
-        ]);
-    }
-
     public function render_levels_recursive($data) {
         return $this->render_from_template('block_training_architecture/level_recursive', $data);
-    }
-
-    public function render_semester_wrapper($trainingid, $content) {
-        return $this->render_from_template('block_training_architecture/semester_wrapper', [
-            'training_id' => $trainingid,
-            'content' => $content
-        ]);
     }
 
     public function render_semester_toggle($trainingid) {

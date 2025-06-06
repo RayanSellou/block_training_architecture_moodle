@@ -115,22 +115,24 @@ class block_training_architecture extends block_base {
             $this->content->text = get_string('no_courses', 'block_training_architecture');
             return false;
         }
-    
+        
+        // Collect user course IDs
         foreach ($courses as $course) {
             $user_courses[] = $course->id;
         }
-    
+        
+        // Get user cohorts
         $cohorts = cohort_get_user_cohorts($USER->id);
         $cohortIds = array_map(fn($c) => $c->id, $cohorts);
     
-        // Précharger toutes les associations cohortes -> formations
+        // Preload cohort to training associations
         $cohortToTrainings = $DB->get_records_list('local_training_architecture_cohort_to_training', 'cohortid', $cohortIds);
         $trainingIds = array_unique(array_column($cohortToTrainings, 'trainingid'));
     
-        // Précharger les formations
+        // Preload training records
         $trainings = $DB->get_records_list('local_training_architecture_training', 'id', $trainingIds);
     
-        // Précharger les cours hors architecture
+        // Preload courses not in architecture
         $coursesNotArchRaw = $DB->get_records_list('local_training_architecture_courses_not_architecture', 'trainingid', $trainingIds);
         $courses_not_in_architecture = [];
         foreach ($coursesNotArchRaw as $record) {
@@ -138,7 +140,7 @@ class block_training_architecture extends block_base {
         }
         $courses_not_in_architecture = array_values($courses_not_in_architecture);
     
-        // Précharger lu_to_lu pour détecter les formations qui ont une architecture
+        // Preload LU to LU links to detect trainings with architecture
         $luToLu = $DB->get_records_list('local_training_architecture_lu_to_lu', 'trainingid', $trainingIds);
         $hasArch = [];
         foreach ($luToLu as $record) {
@@ -147,7 +149,7 @@ class block_training_architecture extends block_base {
             }
         }
     
-        // Construire les chemins d’accès à l’architecture
+        // Build list of courses included in architecture by traversing root LUs
         $courses_in_architecture = [];
         $root_levels_by_training = [];
         foreach ($trainings as $training) {
@@ -161,12 +163,12 @@ class block_training_architecture extends block_base {
             }
         }
     
-        // Afficher les cours hors architecture si on en a
+        // Display courses not in architecture if present
         if (!empty($user_courses) && !empty($courses_not_in_architecture)) {
             $this->display_courses_not_in_architecture($courses_not_in_architecture);
         }
     
-        // Si on est dans un contexte de cours : afficher le chemin
+        // If in course context, show path for current course if it's outside architecture
         if ($this->display_context === 'course') {
             $currentCourseId = optional_param('id', 0, PARAM_INT);
             if (in_array($currentCourseId, $courses_not_in_architecture)) {
@@ -176,11 +178,11 @@ class block_training_architecture extends block_base {
             }
         }
     
-        // Indexer les cohortes par ID
+        // Index cohorts by ID for quick lookup
         $cohortById = [];
         foreach ($cohorts as $c) $cohortById[$c->id] = $c;
     
-        // Grouper les trainings par cohortid
+        // Group training IDs by cohort ID
         $trainingIdsByCohort = [];
         foreach ($cohortToTrainings as $link) {
             $trainingIdsByCohort[$link->cohortid][] = $link->trainingid;
@@ -209,7 +211,7 @@ class block_training_architecture extends block_base {
     
                 ksort($courses_by_semester);
     
-                // Si dans contexte cours, afficher chemin pour les cours concernés
+                // In course context, display path for current course if it belongs to this training architecture
                 if ($this->display_context == 'course') {
                     $this->content->text .= $renderer->render_double_hr();
                     foreach ($courses_in_architecture as $courseId) {
@@ -228,7 +230,7 @@ class block_training_architecture extends block_base {
                     $this->content->text .= $renderer->render_double_hr();
                 }
     
-                // Titre + description
+                // Title + description
                 $div_class = $this->display_context == 'course' ? 'training-title-elements-course' : 'training-title-elements';
                 $training_name = $this->display_context == 'course' ? $training->shortname : $training->fullname;
                 $header_tag = ($this->display_context == 'course') ? 'h5' : 'h4';
@@ -237,12 +239,12 @@ class block_training_architecture extends block_base {
                     get_string('training', 'block_training_architecture') .
                     $training_name . ' (' . $cohort->name . ")</$header_tag>";
     
-                // Description (si en dashboard uniquement)
+                // Description 
                 if ($training->description && $this->display_context != 'course') {
                     $this->content->text .= $renderer->render_description_modal($training->description, $trainingId, 'Training');
                 }
     
-                // Architecture par semestre
+                // Architecture by semester
                 if ($training->issemester == 1) {
                     $this->content->text .= $renderer->render_semester_toggle($trainingId);
                     $this->content->text .= $renderer->render_div_close();
@@ -459,18 +461,32 @@ class block_training_architecture extends block_base {
         }
     }
     
+
+    /**
+     * Recursively retrieves and formats hierarchical levels (LUs) and their courses
+     * for display in a training architecture view. 
+     * @param int $level_id ID of the current LU (Learning Unit) node.
+     * @param int $trainingId ID of the training session.
+     * @param int $depth Current depth in the recursive hierarchy (used for indentation/margins).
+     * @return array|null Structured data ready to be rendered, or null if nothing found.
+     */
     protected function get_levels_data($level_id, $trainingId, $depth = 0) {
         global $DB;
+        // Renderer for outputting HTML elements
         $renderer = $this->page->get_renderer('block_training_architecture');
     
+        // Calculate left margin based on depth to indent hierarchy visually
         $margin_left = $depth * 20;
         $margin_left_courses = $margin_left + 20;
     
+        // Get the name and description of the current Learning Unit (LU)
         $level_name = $this->get_level_name($level_id);
         $description = $DB->get_field('local_training_architecture_lu', 'description', ['id' => $level_id]);
     
+        // Get child links: LUs or courses related to this LU
         $children_links = $DB->get_records('local_training_architecture_lu_to_lu', ['luid1' => $level_id, 'trainingid' => $trainingId]);
     
+        // Check if all children links point to LUs (no direct courses)
         $all_false = true;
         foreach ($children_links as $child) {
             if ($child->isluid2course !== 'false') {
@@ -479,6 +495,7 @@ class block_training_architecture extends block_base {
             }
         }
     
+        // If all children are LUs (no courses), sort them by defined training order
         if ($all_false) {
             uasort($children_links, function($a, $b) use ($trainingId, $DB) {
                 $sortOrderA = $DB->get_field('local_training_architecture_order', 'sortorder', [
@@ -498,6 +515,7 @@ class block_training_architecture extends block_base {
         $courses = [];
         $children_data = [];
     
+        // Separate courses from child LUs, and recurse for each child LU
         foreach ($children_links as $child) {
             if ($child->isluid2course === 'true') {
                 $courses[] = $child->luid2;
@@ -505,6 +523,7 @@ class block_training_architecture extends block_base {
                 'luid1' => $child->luid2,
                 'trainingid' => $trainingId
             ])) {
+                // Recursive call to get child LU data
                 $child_data = $this->get_levels_data($child->luid2, $trainingId, $depth + 1);
                 if ($child_data !== null) {
                     $children_data[] = $child_data;
@@ -512,13 +531,16 @@ class block_training_architecture extends block_base {
             }
         }
     
+        // If there are no child LUs but courses exist, prepare HTML summary with indentation
         if (empty($children_data) && !empty($courses)) {
             $margin_style_semester = "margin-left: {$margin_left}px;";
             $margin_style_courses = "margin-left: {$margin_left_courses}px;";
-        
+    
+            // Generate HTML for courses and wrap it in container
             $courses_html = $this->display_courses($courses);
             $courses_html = $renderer->render_courses_container($courses_html);
-        
+    
+            // Render summary block for the current LU with course info and styles
             $summary_html = $renderer->render_summary(
                 $level_name,
                 $description,
@@ -531,7 +553,8 @@ class block_training_architecture extends block_base {
                 $margin_style_courses,
                 $courses_html
             );
-        
+    
+            // Return structured data with summary and no children
             return [
                 'level_name' => $level_name,
                 'description_modal' => '',
@@ -544,12 +567,14 @@ class block_training_architecture extends block_base {
             ];
         }
     
+        // If there are courses, generate HTML for them
         $courses_html = '';
         if (!empty($courses)) {
             $courses_html = $this->display_courses($courses);
             $courses_html = $renderer->render_courses_container($courses_html);
         }
     
+        // Return all gathered data including children, courses, and description modal if applicable
         return [
             'level_name' => $level_name,
             'description_modal' => $description && $this->display_context != 'course'
@@ -565,7 +590,6 @@ class block_training_architecture extends block_base {
             'summary' => false,
         ];
     }
-    
     
     
 
@@ -604,31 +628,38 @@ class block_training_architecture extends block_base {
     
         $renderer = $this->page->get_renderer('block_training_architecture');
     
-        // Récupération des infos LU
+        // Fetch the LU description and ID using its fullname.
         $description = $DB->get_field('local_training_architecture_lu', 'description', ['fullname' => $level_name]);
         $id = $DB->get_field('local_training_architecture_lu', 'id', ['fullname' => $level_name]);
     
+        // Determine if the section should be expanded (only in course context, and course is in the list).
         $openDetails = $this->display_context == 'course' && in_array(optional_param('id', 0, PARAM_INT), $courses);
+    
+        // Set CSS class based on whether we're in a course or dashboard context.
         $class = $this->display_context == 'course' ? 'course-context' : 'dashboard-context';
     
+        // Generate the HTML for the list of associated courses.
         $courses_html = $this->display_courses($courses);
-
+    
+        // Wrap courses in a container if we're not in course context.
         if ($this->display_context != 'course') {
             $courses_html = $renderer->render_courses_container($courses_html);
         }
-
-        // Puis tu passes ça au template summary
+    
+        // Render the final summary block with all components.
         $this->content->text .= $renderer->render_summary(
             $level_name,
             $description,
             $id,
             $openDetails,
             $class,
-            trim(str_replace(['style="', '"'], '', $margin_style_1)),
+            trim(str_replace(['style="', '"'], '', $margin_style_1)), // Clean up inline style
             trim(str_replace(['style="', '"'], '', $margin_style_2)),
             $courses_html
         );
     }
+    
+    
     
 
     /**
@@ -716,25 +747,37 @@ class block_training_architecture extends block_base {
         $this->content->text .= $renderer->render_levels_by_semester(['levels' => $levels]);
     }
 
+    /**
+     * Recursively prepares the architecture structure (levels and courses) for display.
+     *
+     * @param array $level_data Nested array of LU structure.
+     * @param string $granularityLevel Level depth (e.g., 1 = LU > Course, 2 = Block > LU > Course).
+     * @param int|null $lu_id Parent LU ID (used in recursion).
+     * @param int $depth Current recursion level (used for indentation/margin).
+     * @return array Prepared data structure to be rendered by the template.
+     */
     protected function prepare_levels_recursive($level_data, $granularityLevel, $lu_id = null, $depth = 0) {
         global $DB;
-    
+
         $levels = [];
         $margin_left = ($depth + 1) * 20;
-        $luId = $lu_id;
-    
+
         foreach ($level_data as $key => $value) {
+            // Skip non-LU entries (they are indexed under '0')
             if ($key !== '0' && is_array($value)) {
                 $luId = $key;
                 $level_name = $this->get_level_name($luId);
+
+                // Optional description modal (only in dashboard view)
                 $description = $DB->get_field('local_training_architecture_lu', 'description', ['id' => $luId]);
                 $description_modal = ($description && $this->display_context !== 'course')
                     ? $this->page->get_renderer('block_training_architecture')->render_description_modal($description, $luId, 'Lu')
                     : '';
-    
+
+                // Recursive call to process children LUs
                 $children = $this->prepare_levels_recursive($value, $granularityLevel, $luId, $depth + 1);
-    
-                // Extraire les cours associés à ce niveau
+
+                // Extract course IDs from the structure
                 $courses = [];
                 foreach ($value as $child) {
                     if ($granularityLevel == '2') {
@@ -749,30 +792,32 @@ class block_training_architecture extends block_base {
                         }
                     }
                 }
-    
-                // Générer HTML des cours
+
+                // Build HTML for each course (image + name), depending on the context
                 $courses_html = '';
-                if (!empty($courses)) {
-                    foreach ($courses as $course_id) {
-                        $course_name = $DB->get_field('course', 'shortname', ['id' => $course_id]);
-                        $course_url = $course_name ? "{$GLOBALS['CFG']->wwwroot}/course/view.php?id=$course_id" : '#';
-    
-                        if ($this->display_context == 'course') {
-                            $courses_html .= $this->page->get_renderer('block_training_architecture')->render_course_course_context($course_name, $course_url, $GLOBALS['OUTPUT']);
-                        } else {
-                            $image_url = $this->get_course_image_url($course_id);
-                            $courses_html .= $this->page->get_renderer('block_training_architecture')->render_course_dashboard_context($course_name, $course_url, $image_url, $course_id);
-                        }
+                foreach ($courses as $course_id) {
+                    $course_name = $DB->get_field('course', 'shortname', ['id' => $course_id]);
+                    $course_url = $course_name ? "{$GLOBALS['CFG']->wwwroot}/course/view.php?id=$course_id" : '#';
+
+                    if ($this->display_context == 'course') {
+                        $courses_html .= $this->page->get_renderer('block_training_architecture')
+                            ->render_course_course_context($course_name, $course_url, $GLOBALS['OUTPUT']);
+                    } else {
+                        $image_url = $this->get_course_image_url($course_id);
+                        $courses_html .= $this->page->get_renderer('block_training_architecture')
+                            ->render_course_dashboard_context($course_name, $course_url, $image_url, $course_id);
                     }
                 }
-    
+
+                // Assemble all level info for rendering
                 $levels[] = [
                     'level_name' => $level_name,
                     'description_modal' => $description_modal,
                     'class' => $this->display_context == 'course' ? 'course-context first-level-margin' : 'first-level',
                     'margin_left' => $margin_left,
                     'is_first_level' => ($depth == 0 && $granularityLevel == '2'),
-                    'children' => $this->page->get_renderer('block_training_architecture')->render_levels_by_semester(['levels' => $children]),
+                    'children' => $this->page->get_renderer('block_training_architecture')
+                        ->render_levels_by_semester(['levels' => $children]),
                     'has_courses' => !empty($courses),
                     'courses_html' => $courses_html,
                     'margin_style_1' => $margin_left - 20,
@@ -783,23 +828,30 @@ class block_training_architecture extends block_base {
                 ];
             }
         }
-    
+
         return $levels;
     }
 
+
     /**
      * Recursively retrieves courses included in the architecture for a given level.
-     * @param int $level_id The ID of the level in the architecture.
-     * @param array $courses An array to store the course IDs found in the architecture.
+     *
+     * This method builds a flat list of all course IDs that are directly or indirectly
+     * associated with a given architecture level. It navigates the hierarchy using recursion,
+     * avoiding repeated DB calls by caching the full link structure the first time it's needed.
+     *
+     * @param int $level_id The ID of the starting level (LU).
+     * @param array $courses An array passed by reference to accumulate course IDs found.
      * @return array The array of course IDs included in the architecture for the given level.
      */
     protected function get_courses_in_architecture($level_id, &$courses) {
         global $DB;
 
-        // Récupère en une fois tous les liens dans l'arbre (luid1 => array of children)
+        // Cache all LU-to-LU relationships to avoid redundant DB queries on recursion
         static $all_links = null;
 
         if ($all_links === null) {
+            // Load all tree relationships from the database once
             $records = $DB->get_records('local_training_architecture_lu_to_lu');
             $all_links = [];
             foreach ($records as $rec) {
@@ -807,15 +859,16 @@ class block_training_architecture extends block_base {
             }
         }
 
+        // If the current level has children, iterate through them
         if (!empty($all_links[$level_id])) {
             foreach ($all_links[$level_id] as $child) {
-                // On vérifie s'il a des enfants en cherchant dans $all_links
                 $has_children = !empty($all_links[$child->luid2]);
 
+                // If the child is not a course and has children, recurse deeper
                 if ($has_children && $child->isluid2course === 'false') {
-                    // Appel récursif sans nouvelle requête DB
                     $this->get_courses_in_architecture($child->luid2, $courses);
                 } else {
+                    // Otherwise, it's a course ID — add it to the result
                     $courses[] = $child->luid2;
                 }
             }
@@ -845,69 +898,94 @@ class block_training_architecture extends block_base {
     }
 
     /**
- * Displays a list of courses either in course context or dashboard context.
- * @param array $courses An array of course IDs.
- * @return string HTML output for the courses.
- */
-protected function display_courses($courses) {
-    global $DB, $CFG;
+     * Displays a list of courses either in course context or dashboard context.
+     *
+     * This method builds and returns the HTML for displaying course links. It adjusts
+     * the rendering depending on the display context (within a course or from the dashboard).
+     *
+     * @param array $courses An array of course IDs to display.
+     * @return string HTML output for the courses.
+     */
+    protected function display_courses($courses) {
+        global $DB, $CFG;
 
-    $renderer = $this->page->get_renderer('block_training_architecture');
-    $output = '';
+        // Get the renderer for this plugin
+        $renderer = $this->page->get_renderer('block_training_architecture');
+        $output = '';
 
-    if (empty($courses)) {
+        // If the course list is empty, return an empty string early
+        if (empty($courses)) {
+            return $output;
+        }
+
+        // Fetch course shortnames in a single query for better performance
+        list($in_sql, $params) = $DB->get_in_or_equal($courses);
+        $course_records = $DB->get_records_select('course', "id $in_sql", $params, '', 'id, shortname');
+
+        // Loop through each course ID to build output
+        foreach ($courses as $course_id) {
+            // Skip if the course doesn't exist in the fetched records
+            if (!isset($course_records[$course_id])) {
+                continue;
+            }
+
+            // Retrieve course shortname and URL
+            $course_name = $course_records[$course_id]->shortname;
+            $course_url = "$CFG->wwwroot/course/view.php?id=$course_id";
+
+            // Render differently depending on whether we are in a course page or the dashboard
+            if ($this->display_context == 'course') {
+                // Render course in 'course context' (simple format)
+                $output .= $renderer->render_course_course_context($course_name, $course_url);
+            } else {
+                // Render course in 'dashboard context' (includes image and ID)
+                $imageUrl = $this->get_course_image_url($course_id);
+                $output .= $renderer->render_course_dashboard_context($course_name, $course_url, $imageUrl, $course_id);
+            }
+        }
+
+        // Return the built HTML
         return $output;
     }
-
-    // Récupérer tous les shortnames d'un coup (et potentiellement d'autres infos si besoin)
-    list($in_sql, $params) = $DB->get_in_or_equal($courses);
-    $course_records = $DB->get_records_select('course', "id $in_sql", $params, '', 'id, shortname');
-
-    foreach ($courses as $course_id) {
-        if (!isset($course_records[$course_id])) {
-            continue; // skip unknown course
-        }
-
-        $course_name = $course_records[$course_id]->shortname;
-        $course_url = "$CFG->wwwroot/course/view.php?id=$course_id";
-
-        if ($this->display_context == 'course') {
-            $output .= $renderer->render_course_course_context($course_name, $course_url);
-        } else {
-            $imageUrl = $this->get_course_image_url($course_id);
-            $output .= $renderer->render_course_dashboard_context($course_name, $course_url, $imageUrl, $course_id);
-        }
-    }
-
-    return $output;
-}
     
 
     /**
      * Displays the path of a course within a training architecture.
+     *
+     * - Fetches the hierarchy from Learning Units (LUs) to course.
+     * - Determines if a semester display is needed.
+     * - Builds one or two paths depending on whether the training uses semesters.
+     * - Supports both single-level (LU > course) and two-level (Block > LU > course) structures.
+     *
      * @param int $trainingId The ID of the training.
      * @param int $courseId The ID of the course.
      */
     protected function display_path($trainingId, $courseId) {
         global $DB;
         $renderer = $this->page->get_renderer('block_training_architecture');
-    
+
+        // Fetch basic display metadata
         $numberOfLevels = (int) $this->get_number_of_level($trainingId);
         $isSemester = (int) $DB->get_field('local_training_architecture_training', 'issemester', ['id' => $trainingId]);
         $course_name = $DB->get_field('course', 'shortname', ['id' => $courseId]);
-        $semester = $DB->get_field('local_training_architecture_training_links', 'semester', ['trainingid' => $trainingId, 'courseid' => $courseId]);
-    
+        $semester = $DB->get_field('local_training_architecture_training_links', 'semester', [
+            'trainingid' => $trainingId,
+            'courseid' => $courseId
+        ]);
+
+        // Fetch LU-to-course mappings (LUid2 is the course)
         $records = $DB->get_records('local_training_architecture_lu_to_lu', [
             'trainingid' => $trainingId,
             'luid2' => $courseId,
             'isluid2course' => 'true'
         ]);
-    
-        // Collect all LU ids involved
+
+        // Gather LU and (if applicable) block IDs for later name resolution
         $lu_ids = [];
         foreach ($records as $record) {
             $lu_ids[] = $record->luid1;
-    
+
+            // In two-level structure, fetch the parent block of the LU
             if ($numberOfLevels > 1) {
                 $parent = $DB->get_record('local_training_architecture_lu_to_lu', [
                     'trainingid' => $trainingId,
@@ -916,24 +994,26 @@ protected function display_courses($courses) {
                 ]);
                 if ($parent) {
                     $lu_ids[] = $parent->luid1;
-                    $record->parent_luid1 = $parent->luid1; // cache it
+                    $record->parent_luid1 = $parent->luid1; // Cache for later
                 }
             }
         }
-    
-        // Get all LU shortnames in a single query
+
+        // Retrieve all LU/block shortnames in a single efficient query
         $lu_ids = array_unique($lu_ids);
         list($in_sql, $params) = $DB->get_in_or_equal($lu_ids);
         $lu_names = $DB->get_records_select_menu('local_training_architecture_lu', "id $in_sql", $params, '', 'id, shortname');
-    
-        // Build path data
+
+        // Build display paths
         $paths = [];
-    
+
         foreach ($records as $record) {
             $module_name = $lu_names[$record->luid1] ?? '';
-            
+
+            // Handle 1-level structure: LU > Course
             if ($numberOfLevels === 1) {
                 if ($isSemester && $semester) {
+                    // Semester view + LU > Course
                     $paths[] = [
                         'id' => "path-training-{$trainingId}",
                         'steps' => [
@@ -950,6 +1030,7 @@ protected function display_courses($courses) {
                         ]
                     ];
                 } else {
+                    // No semester
                     $paths[] = [
                         'id' => '',
                         'steps' => [
@@ -958,11 +1039,14 @@ protected function display_courses($courses) {
                         ]
                     ];
                 }
+
+            // Handle 2-level structure: Block > LU > Course
             } else {
                 $block_id = $record->parent_luid1 ?? null;
                 $block_name = $block_id && isset($lu_names[$block_id]) ? $lu_names[$block_id] : '';
-    
+
                 if ($isSemester && $semester) {
+                    // Semester view + Block > LU > Course
                     $paths[] = [
                         'id' => "path-training-{$trainingId}",
                         'steps' => [
@@ -981,6 +1065,7 @@ protected function display_courses($courses) {
                         ]
                     ];
                 } else {
+                    // No semester
                     $paths[] = [
                         'id' => '',
                         'steps' => [
@@ -992,62 +1077,11 @@ protected function display_courses($courses) {
                 }
             }
         }
-    
+
+        // Render all built paths via template
         $this->content->text .= $renderer->render_path_display(['paths' => $paths]);
     }
-    
 
-    /**
-     * Generates HTML markup for displaying a course in a course context.
-     * @param string $course_name The name of the course.
-     * @param string $course_url The URL of the course.
-     * @param object $OUTPUT The Moodle output object.
-     * @return string HTML markup for the course in a course context.
-     */
-    // protected function generate_course_course_context_html($course_name, $course_url, $OUTPUT) {
-    //     $icon = $OUTPUT->pix_icon('i/course', get_string('course'));
-    //     $courseId = optional_param('id', 0, PARAM_INT);
-    //     $courseUrlId = $this->getCourseUrlId($course_url);
-
-    //     // Determine if the current course matches the course in the URL
-    //     $actualCourseIcon = ($courseId == $courseUrlId) ? $OUTPUT->pix_icon('t/online', get_string('actualCourse', 'block_training_architecture'), 'moodle', ['class' => 'green']) : '';
-        
-    //     return '
-    //     <div class="course-context">
-    //         <a class="blue" href="' . $course_url . '">' . $actualCourseIcon . $icon . $course_name . '</a>
-    //     </div>';
-    // }
-    
-    /**
-     * Generates HTML markup for displaying a course in a dashboard context.
-     * @param string $course_name The name of the course.
-     * @param string $course_url The URL of the course.
-     * @param string $imageUrl The URL of the course image.
-     * @return string HTML markup for the course in a dashboard context.
-     */
-    // protected function generate_course_dashboard_context_html($course_name, $course_url, $imageUrl, $course_id) {
-
-    //     global $DB;
-    //     $course = $DB->get_record('course', ['id' => $course_id]);
-
-    //     $formattedSummary = format_text($course->summary, $course->sumaryformat, ['noclean' => false]);
-
-    //     return '
-    //         <div class="course-box" title="' . htmlspecialchars(strip_tags($formattedSummary), ENT_QUOTES, 'UTF-8') . '">
-    //             <div class="frontpage-course-box">
-    //                 <div class="course-item">
-    //                     <div class="course-item-img">
-    //                         <a href="' . $course_url . '" style="background-image: url(\'' . $imageUrl . '\')"></a>                                
-    //                     </div>
-    //                     <div class="course-content-block">
-    //                         <div class="title">
-    //                             <a class="title-a" href="' . $course_url . '">' . $course_name . '</a>
-    //                         </div>
-    //                     </div>
-    //                 </div>
-    //             </div>
-    //         </div>';
-    // }
 
     /**
      * Retrieves the course ID from a given course URL.
@@ -1068,36 +1102,6 @@ protected function display_courses($courses) {
 
         return $courseUrlId;
     }
-
-    // protected function addDescriptionModal($description, $id, $type) {
-    //     global $CFG;
-
-    //     $modalId = 'descriptionModal' . $type . $id;
-    //     $labelId = 'descriptionModalLabel' . $type . $id;
-    //     $buttonId = 'modal-btn-' . $type . '-' . $id;
-    //     $imageUrl = $CFG->wwwroot . "/blocks/training_architecture/images/description.png";
-
-    //     $this->content->text .= '
-    //     <button type="button" class="btn-modal-training" data-toggle="modal" data-target="#' . $modalId . '" id="' . $buttonId . '">
-    //         <img class="img-description" src="' . $imageUrl . '" width="20px">
-    //     </button>
-
-    //     <div class="modal fade" id="' . $modalId . '" tabindex="-1" aria-labelledby="' . $labelId . '" aria-hidden="true">
-    //         <div class="modal-dialog" id="custom-modal">
-    //             <div class="modal-content" id="custom-modal-content">
-    //                 <div class="modal-header">
-    //                     <h5 class="modal-title" id="' . $labelId . '">' . get_string('descriptionModalTitle', 'block_training_architecture') . '</h5>
-    //                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-    //                         <span aria-hidden="true">&times;</span>
-    //                     </button>
-    //                 </div>
-    //                 <div class="modal-body">
-    //                     ' . $description . '
-    //                 </div>
-    //             </div>
-    //         </div>
-    //     </div>';
-    // }
 
     /**
      * Checks whether the given page is site-level (Dashboard or Front page) or not.
