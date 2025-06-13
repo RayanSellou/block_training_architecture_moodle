@@ -231,7 +231,7 @@ class block_training_architecture extends block_base {
                 }
     
                 // Title + description
-                $div_class = $this->display_context == 'course' ? 'training-title-elements-course' : 'training-title-elements';
+                $div_class = $this->display_context == 'course' ? 'blocktrainingarchitecture-training-title-elements-course' : 'blocktrainingarchitecture-training-title-elements';
                 $training_name = $this->display_context == 'course' ? $training->shortname : $training->fullname;
                 $header_tag = ($this->display_context == 'course') ? 'h5' : 'h4';
     
@@ -581,8 +581,8 @@ class block_training_architecture extends block_base {
                 ? $renderer->render_description_modal($description, $level_id, 'Lu')
                 : '',
             'class' => $this->display_context == 'course'
-                ? 'course-context'
-                : 'first-level',
+                ? 'blocktrainingarchitecture-course-context'
+                : 'blocktrainingarchitecture-first-level',
             'margin_left' => $margin_left,
             'courses_html' => $courses_html,
             'children' => $children_data,
@@ -636,7 +636,7 @@ class block_training_architecture extends block_base {
         $openDetails = $this->display_context == 'course' && in_array(optional_param('id', 0, PARAM_INT), $courses);
     
         // Set CSS class based on whether we're in a course or dashboard context.
-        $class = $this->display_context == 'course' ? 'course-context' : 'dashboard-context';
+        $class = $this->display_context == 'course' ? 'blocktrainingarchitecture-course-context' : 'blocktrainingarchitecture-dashboard-context';
     
         // Generate the HTML for the list of associated courses.
         $courses_html = $this->display_courses($courses);
@@ -675,7 +675,7 @@ class block_training_architecture extends block_base {
         $levels = $this->get_number_of_level($trainingId);
 
         // Define the CSS class for section headers based on the display context
-        $section_header_class = $this->display_context == 'course' ? 'course-section-header-block course-context' : 'course-section-header-block first-level';
+        $section_header_class = $this->display_context == 'course' ? 'blocktrainingarchitecture-course-section-header-block blocktrainingarchitecture-course-context' : 'blocktrainingarchitecture-course-section-header-block blocktrainingarchitecture-first-level';
 
         $this->content->text .= $this->page->get_renderer('block_training_architecture')->render_semester_header($semesterId, $this->display_context);
 
@@ -813,7 +813,7 @@ class block_training_architecture extends block_base {
                 $levels[] = [
                     'level_name' => $level_name,
                     'description_modal' => $description_modal,
-                    'class' => $this->display_context == 'course' ? 'course-context first-level-margin' : 'first-level',
+                    'class' => $this->display_context == 'course' ? 'blocktrainingarchitecture-course-context blocktrainingarchitecture-first-level-margin' : 'blocktrainingarchitecture-first-level',
                     'margin_left' => $margin_left,
                     'is_first_level' => ($depth == 0 && $granularityLevel == '2'),
                     'children' => $this->page->get_renderer('block_training_architecture')
@@ -822,7 +822,7 @@ class block_training_architecture extends block_base {
                     'courses_html' => $courses_html,
                     'margin_style_1' => $margin_left - 20,
                     'margin_style_2' => $margin_left,
-                    'summary_class' => $this->display_context == 'course' ? 'course-context' : 'dashboard-context',
+                    'summary_class' => $this->display_context == 'course' ? 'blocktrainingarchitecture-course-context' : 'blocktrainingarchitecture-dashboard-context',
                     'open' => ($this->display_context == 'course' && in_array(optional_param('id', 0, PARAM_INT), $courses)),
                     'is_course_context' => $this->display_context == 'course'
                 ];
